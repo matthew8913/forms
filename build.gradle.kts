@@ -30,7 +30,7 @@ dependencies {
 	// implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	// implementation("org.springframework.boot:spring-boot-starter-security")
 	// implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
-	// implementation("org.liquibase:liquibase-core")
+	implementation("org.liquibase:liquibase-core")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
