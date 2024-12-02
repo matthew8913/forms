@@ -3,7 +3,6 @@ package edu.eltex.forms.controller;
 import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.service.FormService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/forms")
+@RequestMapping("/api/v1/forms")
 public class FormController {
 
     private final FormService formService;
@@ -21,14 +20,14 @@ public class FormController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public FormResponseDTO createForm(@RequestBody FormRequestDTO formRequestDTO) {
-        return formService.createForm(formRequestDTO);
+    public ResponseEntity<FormResponseDTO> createForm(@RequestBody FormRequestDTO formRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(formService.createForm(formRequestDTO));
     }
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<FormResponseDTO>> getAllForms() {
-        List<FormResponseDTO> customers = formService.getAllForms();
-        return ResponseEntity.ok(customers);
+        List<FormResponseDTO> forms = formService.getAllForms();
+        return ResponseEntity.ok(forms);
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")

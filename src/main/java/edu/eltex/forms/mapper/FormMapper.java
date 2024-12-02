@@ -8,18 +8,19 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {OptionMapper.class, QuestionMapper.class})
 public interface FormMapper {
 
     @Mappings({
             @Mapping(source = "creatorId", target = "creator.id"),
-            @Mapping(source = "creatorName", target = "creator.username")
+            @Mapping(source = "creatorName", target = "creator.username"),
     })
     FormModel toModel(FormRequestDTO formRequestDTO);
 
     @Mappings({
             @Mapping(source = "creator.id", target = "creatorId"),
-            @Mapping(source = "creator.username", target = "creatorName")
+            @Mapping(source = "creator.username", target = "creatorName"),
+            @Mapping(source = "questions", target = "questions")
     })
     FormResponseDTO toDto(Form formEntity);
 

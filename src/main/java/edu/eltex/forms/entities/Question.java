@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "questions")
 @Data
@@ -30,12 +33,14 @@ public class Question {
 
     private String imageUrl;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Answer> answers = new ArrayList<>();
+
     public enum Type {
         NUMERIC,
         SINGLE_CHOICE,
         MULTIPLE_CHOICE,
         TEXT
     }
-
 }
-

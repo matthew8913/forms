@@ -11,12 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FormResponseDTO {
+public class QuestionResponseDTO {
 
     private Integer id;
-    private Integer creatorId;
-    private String creatorName;
-    private String title;
-    private String description;
-    private List<QuestionResponseDTO> questions;
+    private String text;
+    private String type;
+    private String imageUrl;
+    private List<AnswerResponseDTO> answers;
 }
