@@ -37,5 +37,12 @@ public class Question {
         TEXT
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public String getText() {
+        return text;
+    }
 }
 

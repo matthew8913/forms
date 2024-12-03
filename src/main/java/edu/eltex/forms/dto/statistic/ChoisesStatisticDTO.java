@@ -1,0 +1,40 @@
+package edu.eltex.forms.dto.statistic;
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Data
+@Builder
+public class ChoisesStatisticDTO {
+    private List<String> answers;
+    private List<Integer> numberOfAnswered;
+    private List<Double> percentageOfAnswered;
+
+    public static ChoisesStatisticDTO getFullChoisesStatisticDTO(List<String> answers, int numberOfResponses) {
+        Map<String, Long> answerCounts = answers.stream()
+                .collect(Collectors.groupingBy(answer -> answer, Collectors.counting()));
+
+        List<String> uniqueAnswers = new ArrayList<>(answerCounts.keySet());
+
+        List<Integer> counts = answerCounts.values().stream().map(Long::intValue).collect(Collectors.toList());
+
+        List<Double> percentages = counts.stream()
+                .map(count -> new BigDecimal((double) count / numberOfResponses * 100)
+                        .setScale(2, RoundingMode.DOWN)
+                        .doubleValue())
+                .collect(Collectors.toList());
+
+        return ChoisesStatisticDTO.builder()
+                .answers(uniqueAnswers)
+                .numberOfAnswered(counts)
+                .percentageOfAnswered(percentages)
+                .build();
+    }
+}
