@@ -37,6 +37,10 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options = new ArrayList<>();
+
     public enum Type {
         NUMERIC,
         SINGLE_CHOICE,
