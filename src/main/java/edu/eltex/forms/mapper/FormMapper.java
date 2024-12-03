@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring", uses = {OptionMapper.class, QuestionMapper.class})
+@Mapper(componentModel = "spring", uses = OptionMapper.class)
 public interface FormMapper {
 
     @Mappings({

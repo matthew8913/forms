@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FormModel {
+public class UserModel {
 
     private Integer id;
-    private UserModel creator;
-    private String title;
-    private String description;
+    private String username;
+    private String password;
+    private String role;
 }
