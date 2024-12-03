@@ -19,12 +19,13 @@ public class Answer {
 
     @ManyToOne
     @JoinColumn(name = "response_id", nullable = false)
-    private Response response;
+    private Completion completion;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+    @Column(name = "answer_text")
     private String answerText;
 
     @ManyToOne

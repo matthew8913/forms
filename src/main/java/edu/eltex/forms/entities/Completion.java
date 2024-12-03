@@ -7,12 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "responses")
+@Table(schema = "public", name = "completions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Response {
+public class Completion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

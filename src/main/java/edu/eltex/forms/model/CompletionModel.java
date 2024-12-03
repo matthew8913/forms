@@ -1,4 +1,4 @@
-package edu.eltex.forms.dto;
+package edu.eltex.forms.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnswerResponseDTO {
-
+public class CompletionModel {
     private Integer id;
-    private Integer completionId;
-    private String answerText;
-    private OptionResponseDTO selectedOption;
+    private UserModel user;
+    private FormModel form;
 }
