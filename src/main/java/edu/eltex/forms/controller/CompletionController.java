@@ -5,6 +5,7 @@ import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.service.CompletionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class CompletionController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<CompletionResponseDTO> createCompletion(@RequestBody CompletionRequestDTO completionRequestDTO) {
+    public ResponseEntity<CompletionResponseDTO> createCompletion(@Validated @RequestBody CompletionRequestDTO completionRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(completionService.createCompletion(completionRequestDTO));
     }
 

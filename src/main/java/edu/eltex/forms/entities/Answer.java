@@ -18,7 +18,7 @@ public class Answer {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "response_id", nullable = false)
+    @JoinColumn(name = "completion_id", nullable = false)
     private Completion completion;
 
     @ManyToOne
@@ -28,7 +28,7 @@ public class Answer {
     @Column(name = "answer_text")
     private String answerText;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "selected_option_id")
     private Option selectedOption;
 }

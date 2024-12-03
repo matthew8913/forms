@@ -13,6 +13,7 @@ public class AnswerResponseDTO {
 
     private Integer id;
     private Integer completionId;
+    private Integer questionId;
     private String answerText;
     private OptionResponseDTO selectedOption;
 }

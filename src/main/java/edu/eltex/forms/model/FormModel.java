@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class FormModel {
-
     private Integer id;
     private UserModel creator;
     private String title;

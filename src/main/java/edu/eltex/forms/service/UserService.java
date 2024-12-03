@@ -9,6 +9,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class UserService {
 
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         User user = userMapper.toEntity(userRequestDto);
-        if(userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new EntityExistsException("User with username: " + user.getUsername() + " already exists");
         }
         User savedUser = userRepository.save(user);
@@ -41,7 +42,7 @@ public class UserService {
     }
 
     public UserResponseDto updateUser(Integer id, UserRequestDto userRequestDto) {
-        if(!userRepository.existsById(id)){
+        if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
         User updatedUser = userMapper.toEntity(userRequestDto);

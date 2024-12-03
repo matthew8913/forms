@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CompletionResponseDTO {
+
     private Integer id;
     private Integer userId;
     private Integer formId;

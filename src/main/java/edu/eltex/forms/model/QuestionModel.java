@@ -1,4 +1,4 @@
-package edu.eltex.forms.dto;
+package edu.eltex.forms.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OptionResponseDTO {
-
+public class QuestionModel {
     private Integer id;
     private String text;
+    private String type;
+    private String imageUrl;
 }

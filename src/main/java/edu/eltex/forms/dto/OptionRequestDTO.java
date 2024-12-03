@@ -1,5 +1,6 @@
 package edu.eltex.forms.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OptionResponseDTO {
+public class OptionRequestDTO {
 
-    private Integer id;
+    @NotNull(message = "Option text is mandatory")
     private String text;
 }
