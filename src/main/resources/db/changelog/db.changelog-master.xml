@@ -175,4 +175,122 @@
         </insert>
     </changeSet>
 
+    <changeSet id="insert-user" author="alexey">
+        <insert tableName="users">
+            <column name="username" value="glad_valakas"/>
+            <column name="password" value="password3"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="user3"/>
+            <column name="password" value="password4"/>
+            <column name="role" value="USER"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-response-1" author="alexey">
+        <insert tableName="responses">
+            <column name="user_id" value="2"/>
+            <column name="form_id" value="1"/>
+        </insert>
+    </changeSet>
+    
+    <changeSet id="insert-answers-resp1" author="alexey">
+        <insert tableName="answers">
+            <column name="response_id" value="1"/>
+            <column name="question_id" value="1"/>
+            <column name="answer_text" value="35"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="1"/>
+            <column name="question_id" value="2"/>
+            <column name="selected_option_id" value="2"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="1"/>
+            <column name="question_id" value="3"/>
+            <column name="selected_option_id" value="5"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="1"/>
+            <column name="question_id" value="3"/>
+            <column name="selected_option_id" value="6"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="1"/>
+            <column name="question_id" value="4"/>
+            <column name="answer_text" value="Some description"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-response-2" author="alexey">
+        <insert tableName="responses">
+            <column name="user_id" value="3"/>
+            <column name="form_id" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-answers-resp2" author="alexey">
+        <insert tableName="answers">
+            <column name="response_id" value="2"/>
+            <column name="question_id" value="1"/>
+            <column name="answer_text" value="54"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="2"/>
+            <column name="question_id" value="2"/>
+            <column name="selected_option_id" value="1"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="2"/>
+            <column name="question_id" value="3"/>
+            <column name="selected_option_id" value="4"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="2"/>
+            <column name="question_id" value="3"/>
+            <column name="selected_option_id" value="5"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="2"/>
+            <column name="question_id" value="3"/>
+            <column name="selected_option_id" value="6"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="2"/>
+            <column name="question_id" value="4"/>
+            <column name="answer_text" value="Professional older rapper"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-response-3" author="alexey">
+        <insert tableName="responses">
+            <column name="user_id" value="3"/>
+            <column name="form_id" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-answers-user3" author="alexey">
+        <insert tableName="answers">
+            <column name="response_id" value="3"/>
+            <column name="question_id" value="1"/>
+            <column name="answer_text" value="25"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="3"/>
+            <column name="question_id" value="2"/>
+            <column name="selected_option_id" value="2"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="3"/>
+            <column name="question_id" value="3"/>
+            <column name="selected_option_id" value="4"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="response_id" value="3"/>
+            <column name="question_id" value="4"/>
+            <column name="answer_text" value="About user3"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
