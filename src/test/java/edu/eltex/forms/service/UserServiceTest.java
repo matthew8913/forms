@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.GenericContainer;
@@ -37,12 +38,15 @@ public class UserServiceTest {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void setup() {
-        userService = new UserService(userRepository, userMapper);
+        userService = new UserService(passwordEncoder,userRepository, userMapper);
         userRepository.deleteAll();
     }
 
