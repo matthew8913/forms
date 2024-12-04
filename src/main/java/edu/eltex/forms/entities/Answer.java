@@ -31,4 +31,16 @@ public class Answer {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "selected_option_id")
     private Option selectedOption;
+
+    public String getAnswerText() {
+        return answerText;
+    }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public Option getSelectedOption() {
+        return selectedOption;
+    }
 }

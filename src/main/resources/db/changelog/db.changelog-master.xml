@@ -68,7 +68,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create-completions-table" author="matthew">
+    <changeSet id="create-completion-table" author="matthew">
         <createTable tableName="completions">
             <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -109,6 +109,19 @@
         <insert tableName="users">
             <column name="username" value="user1"/>
             <column name="password" value="password2"/>
+            <column name="role" value="USER"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-user" author="alexey">
+        <insert tableName="users">
+            <column name="username" value="glad_valakas"/>
+            <column name="password" value="password3"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="user3"/>
+            <column name="password" value="password4"/>
             <column name="role" value="USER"/>
         </insert>
     </changeSet>
@@ -159,7 +172,6 @@
         </insert>
     </changeSet>
 
-
     <changeSet id="insert-options-multiple-choice" author="matthew">
         <insert tableName="options">
             <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери свои хобби:')"/>
@@ -175,26 +187,66 @@
         </insert>
     </changeSet>
 
-    <changeSet id="insert-user" author="alexey">
-        <insert tableName="users">
-            <column name="username" value="glad_valakas"/>
-            <column name="password" value="password3"/>
-            <column name="role" value="USER"/>
+    <changeSet id="insert-questions-2" author="alexey">
+        <insert tableName="questions">
+            <column name="form_id" valueComputed="(SELECT id FROM form WHERE title = 'Первая форма')"/>
+            <column name="text" value="Твоё любимое число"/>
+            <column name="type" value="NUMERIC"/>
         </insert>
-        <insert tableName="users">
-            <column name="username" value="user3"/>
-            <column name="password" value="password4"/>
-            <column name="role" value="USER"/>
+        <insert tableName="questions">
+            <column name="form_id" valueComputed="(SELECT id FROM form WHERE title = 'Первая форма')"/>
+            <column name="text" value="Выбери любимую команду"/>
+            <column name="type" value="SINGLE_CHOICE"/>
+        </insert>
+        <insert tableName="questions">
+            <column name="form_id" valueComputed="(SELECT id FROM form WHERE title = 'Первая форма')"/>
+            <column name="text" value="Выбери любимые предметы"/>
+            <column name="type" value="MULTIPLE_CHOICE"/>
+        </insert>
+        <insert tableName="questions">
+            <column name="form_id" valueComputed="(SELECT id FROM form WHERE title = 'Первая форма')"/>
+            <column name="text" value="Напиши что ты думаешь об этом опросе"/>
+            <column name="type" value="TEXT"/>
         </insert>
     </changeSet>
 
-    <changeSet id="insert-completions-1" author="alexey">
+    <changeSet id="insert-options-2" author="matthew">
+        <insert tableName="options">
+            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
+            <column name="text" value="Зенит"/>
+        </insert>
+        <insert tableName="options">
+            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
+            <column name="text" value="Краснодар"/>
+        </insert>
+        <insert tableName="options">
+            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
+            <column name="text" value="Динамо Москва"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-options-multiple-choice-2" author="matthew">
+        <insert tableName="options">
+            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
+            <column name="text" value="Математика"/>
+        </insert>
+        <insert tableName="options">
+            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
+            <column name="text" value="Физика"/>
+        </insert>
+        <insert tableName="options">
+            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
+            <column name="text" value="Литература"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-completion-1" author="alexey">
         <insert tableName="completions">
             <column name="user_id" value="2"/>
             <column name="form_id" value="1"/>
         </insert>
     </changeSet>
-
+    
     <changeSet id="insert-answers-resp1" author="alexey">
         <insert tableName="answers">
             <column name="completion_id" value="1"/>
@@ -220,6 +272,31 @@
             <column name="completion_id" value="1"/>
             <column name="question_id" value="4"/>
             <column name="answer_text" value="Some description"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="5"/>
+            <column name="answer_text" value="16"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="6"/>
+            <column name="selected_option_id" value="8"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="7"/>
+            <column name="selected_option_id" value="10"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="7"/>
+            <column name="selected_option_id" value="12"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="8"/>
+            <column name="answer_text" value="Some text"/>
         </insert>
     </changeSet>
 
@@ -261,11 +338,36 @@
             <column name="question_id" value="4"/>
             <column name="answer_text" value="Professional older rapper"/>
         </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="5"/>
+            <column name="answer_text" value="21"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="6"/>
+            <column name="selected_option_id" value="8"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="7"/>
+            <column name="selected_option_id" value="10"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="7"/>
+            <column name="selected_option_id" value="11"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="8"/>
+            <column name="answer_text" value="Nice"/>
+        </insert>
     </changeSet>
 
     <changeSet id="insert-completion-3" author="alexey">
         <insert tableName="completions">
-            <column name="user_id" value="3"/>
+            <column name="user_id" value="4"/>
             <column name="form_id" value="1"/>
         </insert>
     </changeSet>
@@ -291,11 +393,26 @@
             <column name="question_id" value="4"/>
             <column name="answer_text" value="About user3"/>
         </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="5"/>
+            <column name="answer_text" value="40"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="6"/>
+            <column name="selected_option_id" value="8"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="7"/>
+            <column name="selected_option_id" value="10"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="8"/>
+            <column name="answer_text" value="Review 3"/>
+        </insert>
     </changeSet>
 
-    <changeSet id="add-refresh-token-column" author="matthew">
-        <addColumn tableName="users">
-            <column name="refresh_token" type="VARCHAR(255)"/>
-        </addColumn>
-    </changeSet>
 </databaseChangeLog>
