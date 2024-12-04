@@ -41,6 +41,18 @@ public class FormService {
                 .toList();
     }
 
+    public List<FormResponseDTO> getAllFormsByCreatorName(String creatorName) {
+        return formRepository.findAllByCreator_Username(creatorName).stream()
+                .map(FormMapper.INSTANCE::toDto)
+                .toList();
+    }
+
+    public FormResponseDTO getFormByTitle(String title) {
+        Form formEntity = formRepository.findByTitle(title)
+                .orElseThrow(() -> new EntityNotFoundException("Form with title '" + title + "' not found"));
+        return FormMapper.INSTANCE.toDto(formEntity);
+    }
+
     public FormResponseDTO getFormById(Integer id) {
         Form formEntity = formRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Form not found"));

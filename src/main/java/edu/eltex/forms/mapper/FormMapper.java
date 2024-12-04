@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = OptionMapper.class)
+@Mapper(componentModel = "spring")
 public interface FormMapper {
 
     FormMapper INSTANCE = Mappers.getMapper(FormMapper.class);

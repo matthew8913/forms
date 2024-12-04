@@ -67,8 +67,20 @@ public class FormController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<FormResponseDTO> getForm(@PathVariable Integer id) {
+    public ResponseEntity<FormResponseDTO> getFormById(@PathVariable Integer id) {
         FormResponseDTO form = formService.getFormById(id);
+        return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping(value = "/creator/{username}", produces = "application/json")
+    public ResponseEntity<List<FormResponseDTO>> getAllFormsByCreatorName(@PathVariable String username) {
+        List<FormResponseDTO> formResponseDTOS = formService.getAllFormsByCreatorName(username);
+        return ResponseEntity.ok(formResponseDTOS);
+    }
+
+    @GetMapping(value = "/{title}/answers", produces = "application/json")
+    public ResponseEntity<FormResponseDTO> getAllAnswersByTitle(@PathVariable String title) {
+        FormResponseDTO form = formService.getFormByTitle(title);
         return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
