@@ -21,8 +21,6 @@ public class ChoisesStatisticDTO {
         Map<String, Long> answerCounts = answeredAnswers.stream()
                 .collect(Collectors.groupingBy(answer -> answer, Collectors.counting()));
 
-        List<String> uniqueAnswers = new ArrayList<>(allPossibleAnswers);
-
         List<Integer> counts = allPossibleAnswers.stream()
                 .map(answer -> answerCounts.getOrDefault(answer, 0L).intValue())
                 .collect(Collectors.toList());
@@ -34,7 +32,7 @@ public class ChoisesStatisticDTO {
                 .collect(Collectors.toList());
 
         return ChoisesStatisticDTO.builder()
-                .answers(uniqueAnswers)
+                .answers(allPossibleAnswers)
                 .numberOfAnswered(counts)
                 .percentageOfAnswered(percentages)
                 .build();

@@ -6,12 +6,14 @@ import edu.eltex.forms.dto.statistic.QuestionStatisticDTO;
 import edu.eltex.forms.dto.statistic.StatisticDTO;
 import edu.eltex.forms.entities.Answer;
 import edu.eltex.forms.entities.Option;
+import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.repository.StatisticRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -102,6 +104,13 @@ public class StatisticService {
                 Stream.concat(textQuestionStatistics.stream(), numericQuestionStatistics.stream()),
                 choicesQuestionStatistics.stream()
         ).collect(Collectors.toList());
+
+        List<Question> allQuestions = statisticRepository.getAllQuestions(formId);
+
+        Map<String, Integer> questionIdMap = allQuestions.stream()
+                .collect(Collectors.toMap(Question::getText, Question::getId));
+
+        allQuestionStatistics.sort(Comparator.comparingInt(statistic -> questionIdMap.get(statistic.getQuestionText())));
 
         return StatisticDTO.builder()
                 .numberOfResponses(numberOfResponses)
