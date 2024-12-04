@@ -293,4 +293,9 @@
         </insert>
     </changeSet>
 
+    <changeSet id="add-refresh-token-column" author="matthew">
+        <addColumn tableName="users">
+            <column name="refresh_token" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
