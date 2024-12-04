@@ -3,10 +3,11 @@ package edu.eltex.forms.service;
 import edu.eltex.forms.dto.AuthRequestDto;
 import edu.eltex.forms.dto.AuthResponseDto;
 import edu.eltex.forms.dto.UserRequestDto;
-import edu.eltex.forms.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,15 @@ public class AuthService {
         final String refreshToken = refreshTokenService.createRefreshToken(authRequest.getUsername());
         userService.saveRefreshToken(authRequest.getUsername(), refreshToken);
         return new AuthResponseDto(jwt, refreshToken);
+    }
+
+    public boolean isAuthenticatedUserWithId(Integer userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDetails.getUsername().equals(userId.toString());
+        }
+        return false;
     }
 
     public void registerUser(UserRequestDto registrationRequest) {
