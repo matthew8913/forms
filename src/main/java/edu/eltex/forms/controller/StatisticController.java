@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("api/v1")
 @RequiredArgsConstructor
 @Validated
 public class StatisticController {
 
     private final StatisticService statisticService;
 
-    @GetMapping("{form_id}/statistic")
-    public ResponseEntity<StatisticDTO> getNumberOfResponses(@PathVariable Integer form_id){
-        StatisticDTO response = statisticService.getFormStatistic(form_id);
+    @GetMapping("{formId}/statistic")
+    public ResponseEntity<StatisticDTO> getNumberOfResponses(@PathVariable Integer formId){
+        StatisticDTO response = statisticService.getFormStatistic(formId);
         return ResponseEntity.ok(response);
     }
 }
