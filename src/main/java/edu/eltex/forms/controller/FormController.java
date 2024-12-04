@@ -1,20 +1,12 @@
 package edu.eltex.forms.controller;
 
-import edu.eltex.forms.dto.*;
-import edu.eltex.forms.mapper.FormMapper;
-import edu.eltex.forms.mapper.OptionMapper;
-import edu.eltex.forms.mapper.QuestionMapper;
-import edu.eltex.forms.model.FormModel;
-import edu.eltex.forms.model.OptionModel;
-import edu.eltex.forms.model.QuestionModel;
+import edu.eltex.forms.dto.FormRequestDTO;
+import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.service.FormService;
-import edu.eltex.forms.service.OptionService;
-import edu.eltex.forms.service.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,47 +14,20 @@ import java.util.List;
 public class FormController {
 
     private final FormService formService;
-    private final QuestionService questionService;
-    private final OptionService optionService;
 
-    public FormController(FormService formService, QuestionService questionService, OptionService optionService) {
+    public FormController(FormService formService) {
         this.formService = formService;
-        this.questionService = questionService;
-        this.optionService = optionService;
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<FormResponseDTO> createForm(@RequestBody FormRequestDTO formRequestDTO) {
-        FormModel formModel = FormMapper.INSTANCE.toModel(formRequestDTO);
-        FormModel createdFormModel = formService.createForm(formModel);
-        FormResponseDTO formResponseDTO = FormMapper.INSTANCE.toDto(createdFormModel);
-
-        List<QuestionResponseDTO> questionResponseDTOS = new ArrayList<>();
-        for (QuestionRequestDTO questionRequestDTO : formRequestDTO.getQuestions()) {
-            QuestionModel questionModel = QuestionMapper.INSTANCE.toModel(questionRequestDTO);
-            questionModel.setFormId(createdFormModel.getId());
-
-            QuestionModel createdQuestionModel = questionService.createQuestion(questionModel);
-
-            List<OptionResponseDTO> optionResponseDTOS = new ArrayList<>();
-            if (questionRequestDTO.getOptions() != null) {
-                for (OptionRequestDTO optionRequestDTO : questionRequestDTO.getOptions()) {
-                    OptionModel optionModel = OptionMapper.INSTANCE.toModel(optionRequestDTO);
-                    optionModel.setQuestionId(createdQuestionModel.getId());
-                    OptionModel createdOptionModel = optionService.createOption(optionModel);
-                }
-            }
-            questionResponseDTOS.add(QuestionMapper.INSTANCE.toDto(createdQuestionModel));
-        }
-
-        formResponseDTO.setQuestions(questionResponseDTOS);
-
+        FormResponseDTO formResponseDTO = formService.createForm(formRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(formResponseDTO);
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<FormInfoResponseDTO>> getAllForms() {
-        List<FormInfoResponseDTO> formResponseDTOS = formService.getAllForms();
+    public ResponseEntity<List<FormResponseDTO>> getAllForms() {
+        List<FormResponseDTO> formResponseDTOS = formService.getAllForms();
         return ResponseEntity.ok(formResponseDTOS);
     }
 
@@ -72,16 +37,16 @@ public class FormController {
         return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping(value = "/creator/{username}", produces = "application/json")
-    public ResponseEntity<List<FormResponseDTO>> getAllFormsByCreatorName(@PathVariable String username) {
-        List<FormResponseDTO> formResponseDTOS = formService.getAllFormsByCreatorName(username);
-        return ResponseEntity.ok(formResponseDTOS);
-    }
-
-    @GetMapping(value = "/{title}/answers", produces = "application/json")
-    public ResponseEntity<FormResponseDTO> getAllAnswersByTitle(@PathVariable String title) {
+    @GetMapping(produces = "application/json", params = "title")
+    public ResponseEntity<FormResponseDTO> getFormByTitle(@RequestParam("title") String title) {
         FormResponseDTO form = formService.getFormByTitle(title);
         return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping(produces = "application/json", params = "username")
+    public ResponseEntity<List<FormResponseDTO>> getAllFormsByCreatorName(@RequestParam("username") String username) {
+        List<FormResponseDTO> formResponseDTOS = formService.getAllFormsByCreatorName(username);
+        return ResponseEntity.ok(formResponseDTOS);
     }
 
     @DeleteMapping("/{id}")

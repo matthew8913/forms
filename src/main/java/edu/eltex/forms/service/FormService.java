@@ -1,10 +1,9 @@
 package edu.eltex.forms.service;
 
-import edu.eltex.forms.dto.FormInfoResponseDTO;
+import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.entities.Form;
 import edu.eltex.forms.mapper.FormMapper;
-import edu.eltex.forms.model.FormModel;
 import edu.eltex.forms.repository.FormRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,19 +24,27 @@ public class FormService {
         this.formRepository = formRepository;
     }
 
-    public FormModel createForm(FormModel formModel) {
-        if (formRepository.findByTitle(formModel.getTitle()).isPresent()) {
-            throw new EntityExistsException("Form with title '" + formModel.getTitle() + "' already exists");
+    public FormResponseDTO createForm(FormRequestDTO formRequestDTO) {
+        if (formRepository.findByTitle(formRequestDTO.getTitle()).isPresent()) {
+            throw new EntityExistsException("Form with title '" + formRequestDTO.getTitle() + "' already exists");
         }
 
-        Form formEntity = FormMapper.INSTANCE.toEntity(formModel);
-        formEntity = formRepository.save(formEntity);
-        return FormMapper.INSTANCE.toModel(formEntity);
+        Form formEntity = FormMapper.INSTANCE.toEntity(formRequestDTO);
+
+        formEntity.getQuestions().forEach(question -> {
+            question.setForm(formEntity);
+            if (question.getOptions() != null) {
+                question.getOptions().forEach(option -> option.setQuestion(question));
+            }
+        });
+
+        Form createdFormEntity = formRepository.save(formEntity);
+        return FormMapper.INSTANCE.toDto(createdFormEntity);
     }
 
-    public List<FormInfoResponseDTO> getAllForms() {
+    public List<FormResponseDTO> getAllForms() {
         return StreamSupport.stream(formRepository.findAll().spliterator(), false)
-                .map(FormMapper.INSTANCE::toInfoDto)
+                .map(FormMapper.INSTANCE::toDto)
                 .toList();
     }
 

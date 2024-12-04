@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class OptionResponseDTO {
 
     private Integer id;
-    private String optionText;
+    private String text;
 }
