@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface StatisticRepository extends CrudRepository<Answer, Integer> {
 
-    @Query("SELECT COUNT(r) FROM Response r WHERE r.form.id = :formId")
-    Integer countNumberOfResponses(@Param("formId") int formId);
+    @Query("SELECT COUNT(c) FROM Completion c WHERE c.form.id = :formId")
+    Integer countNumberOfCompletions(@Param("formId") int formId);
 
     @Query("SELECT a FROM Answer a WHERE a.question.form.id = :formId AND a.question.type = 'TEXT' ")
     List<Answer> getTextAnswers(@Param("formId") int formId);

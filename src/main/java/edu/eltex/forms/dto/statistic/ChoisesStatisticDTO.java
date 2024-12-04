@@ -17,7 +17,7 @@ public class ChoisesStatisticDTO {
     private List<Integer> numberOfAnswered;
     private List<Double> percentageOfAnswered;
 
-    public static ChoisesStatisticDTO getFullChoisesStatisticDTO(List<String> answeredAnswers, List<String> allPossibleAnswers, int numberOfResponses) {
+    public static ChoisesStatisticDTO getFullChoisesStatisticDTO(List<String> answeredAnswers, List<String> allPossibleAnswers, int numberOfCompletions) {
         Map<String, Long> answerCounts = answeredAnswers.stream()
                 .collect(Collectors.groupingBy(answer -> answer, Collectors.counting()));
 
@@ -26,7 +26,7 @@ public class ChoisesStatisticDTO {
                 .collect(Collectors.toList());
 
         List<Double> percentages = counts.stream()
-                .map(count -> new BigDecimal((double) count / numberOfResponses * 100)
+                .map(count -> new BigDecimal((double) count / numberOfCompletions * 100)
                         .setScale(2, RoundingMode.HALF_UP)
                         .doubleValue())
                 .collect(Collectors.toList());

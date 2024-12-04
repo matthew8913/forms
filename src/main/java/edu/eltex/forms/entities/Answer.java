@@ -18,8 +18,8 @@ public class Answer {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "response_id", nullable = false)
-    private Response response;
+    @JoinColumn(name = "completion_id", nullable = false)
+    private Completion completion;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)

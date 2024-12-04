@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 @Builder
 public class StatisticDTO {
-    private Integer numberOfResponses;
+    private Integer numberOfCompletions;
     private List<QuestionStatisticDTO> questionStatistic;
 }

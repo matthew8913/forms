@@ -8,7 +8,6 @@ import edu.eltex.forms.entities.Answer;
 import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.repository.StatisticRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class StatisticService {
 
     private final StatisticRepository statisticRepository;
 
-    private List<QuestionStatisticDTO> getChoicesQuestionStatistics(int formId, int numberOfResponses) {
+    private List<QuestionStatisticDTO> getChoicesQuestionStatistics(int formId, int numberOfCompletions) {
         List<Answer> choicesAnswers = statisticRepository.getChoisesAnswers(formId);
         List<Option> allOptions = statisticRepository.getAllOptions(formId);
 
@@ -46,7 +45,7 @@ public class StatisticService {
                     List<String> answeredAnswers = questionAnswersMap.getOrDefault(entry.getKey(), new ArrayList<>());
                     List<String> allPossibleAnswers = entry.getValue();
 
-                    ChoisesStatisticDTO choicesStatistic = ChoisesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfResponses);
+                    ChoisesStatisticDTO choicesStatistic = ChoisesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
 
                     return QuestionStatisticDTO.builder()
                             .questionText(entry.getKey())
@@ -94,11 +93,11 @@ public class StatisticService {
     }
 
     public StatisticDTO getFormStatistic(int formId) {
-        Integer numberOfResponses = statisticRepository.countNumberOfResponses(formId);
+        Integer numberOfCompletions = statisticRepository.countNumberOfCompletions(formId);
 
         List<QuestionStatisticDTO> numericQuestionStatistics = getNumericQuestionStatistics(formId);
         List<QuestionStatisticDTO> textQuestionStatistics = getTextQuestionStatistics(formId);
-        List<QuestionStatisticDTO> choicesQuestionStatistics = getChoicesQuestionStatistics(formId, numberOfResponses);
+        List<QuestionStatisticDTO> choicesQuestionStatistics = getChoicesQuestionStatistics(formId, numberOfCompletions);
 
         List<QuestionStatisticDTO> allQuestionStatistics = Stream.concat(
                 Stream.concat(textQuestionStatistics.stream(), numericQuestionStatistics.stream()),
@@ -113,7 +112,7 @@ public class StatisticService {
         allQuestionStatistics.sort(Comparator.comparingInt(statistic -> questionIdMap.get(statistic.getQuestionText())));
 
         return StatisticDTO.builder()
-                .numberOfResponses(numberOfResponses)
+                .numberOfCompletions(numberOfCompletions)
                 .questionStatistic(allQuestionStatistics)
                 .build();
     }
