@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "completions")
 @Data
@@ -24,4 +27,8 @@ public class Completion {
     @ManyToOne
     @JoinColumn(name = "form_id", nullable = false)
     private Form form;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "completion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Answer> answers = new ArrayList<>();
 }

@@ -8,14 +8,16 @@ import edu.eltex.forms.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -31,17 +33,25 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    public UserResponseDto findUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
+        return userMapper.toDto(user);
+    }
+
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         User user = userMapper.toEntity(userRequestDto);
-        if(userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new EntityExistsException("User with username: " + user.getUsername() + " already exists");
         }
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
 
+
     public UserResponseDto updateUser(Integer id, UserRequestDto userRequestDto) {
-        if(!userRepository.existsById(id)){
+        if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
         User updatedUser = userMapper.toEntity(userRequestDto);
@@ -55,5 +65,11 @@ public class UserService {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
         userRepository.deleteById(id);
+    }
+
+    public void saveRefreshToken(String username, String refreshToken) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
     }
 }
