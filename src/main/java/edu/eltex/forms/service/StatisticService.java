@@ -5,11 +5,13 @@ import edu.eltex.forms.dto.statistic.NumericStatisticDTO;
 import edu.eltex.forms.dto.statistic.QuestionStatisticDTO;
 import edu.eltex.forms.dto.statistic.StatisticDTO;
 import edu.eltex.forms.entities.Answer;
+import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.repository.StatisticRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class StatisticService {
 
     private List<QuestionStatisticDTO> getChoicesQuestionStatistics(int formId, int numberOfResponses) {
         List<Answer> choicesAnswers = statisticRepository.getChoisesAnswers(formId);
+        List<Option> allOptions = statisticRepository.getAllOptions(formId);
 
         Map<String, List<String>> questionAnswersMap = choicesAnswers.stream()
                 .collect(Collectors.groupingBy(
@@ -30,9 +33,19 @@ public class StatisticService {
                         Collectors.mapping(answer -> answer.getSelectedOption().getText(), Collectors.toList())
                 ));
 
-        return questionAnswersMap.entrySet().stream()
+        Map<String, List<String>> allOptionsMap = allOptions.stream()
+                .collect(Collectors.groupingBy(
+                        option -> option.getQuestion().getText(),
+                        Collectors.mapping(Option::getText, Collectors.toList())
+                ));
+
+        return allOptionsMap.entrySet().stream()
                 .map(entry -> {
-                    ChoisesStatisticDTO choicesStatistic = ChoisesStatisticDTO.getFullChoisesStatisticDTO(entry.getValue(), numberOfResponses);
+                    List<String> answeredAnswers = questionAnswersMap.getOrDefault(entry.getKey(), new ArrayList<>());
+                    List<String> allPossibleAnswers = entry.getValue();
+
+                    ChoisesStatisticDTO choicesStatistic = ChoisesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfResponses);
+
                     return QuestionStatisticDTO.builder()
                             .questionText(entry.getKey())
                             .statistic(choicesStatistic)
