@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OptionRequestDTO {
 
-    @NotNull(message = "Option text is mandatory")
+    private Integer id;
+
+    private Integer questionId;
+
+    @NotNull(message = "Text is mandatory")
     private String text;
 }

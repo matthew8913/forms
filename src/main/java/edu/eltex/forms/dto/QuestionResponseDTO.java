@@ -17,5 +17,5 @@ public class QuestionResponseDTO {
     private String text;
     private String type;
     private String imageUrl;
-    private List<AnswerResponseDTO> answers;
+    private List<OptionResponseDTO> options;
 }

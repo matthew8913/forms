@@ -21,19 +21,32 @@ public class FormController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<FormResponseDTO> createForm(@RequestBody FormRequestDTO formRequestDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(formService.createForm(formRequestDTO));
+        FormResponseDTO formResponseDTO = formService.createForm(formRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(formResponseDTO);
     }
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<FormResponseDTO>> getAllForms() {
-        List<FormResponseDTO> forms = formService.getAllForms();
-        return ResponseEntity.ok(forms);
+        List<FormResponseDTO> formResponseDTOS = formService.getAllForms();
+        return ResponseEntity.ok(formResponseDTOS);
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<FormResponseDTO> getForm(@PathVariable Integer id) {
+    public ResponseEntity<FormResponseDTO> getFormById(@PathVariable Integer id) {
         FormResponseDTO form = formService.getFormById(id);
         return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping(produces = "application/json", params = "title")
+    public ResponseEntity<FormResponseDTO> getFormByTitle(@RequestParam("title") String title) {
+        FormResponseDTO form = formService.getFormByTitle(title);
+        return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @GetMapping(produces = "application/json", params = "username")
+    public ResponseEntity<List<FormResponseDTO>> getAllFormsByCreatorName(@RequestParam("username") String username) {
+        List<FormResponseDTO> formResponseDTOS = formService.getAllFormsByCreatorName(username);
+        return ResponseEntity.ok(formResponseDTOS);
     }
 
     @DeleteMapping("/{id}")

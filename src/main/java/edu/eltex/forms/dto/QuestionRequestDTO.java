@@ -1,5 +1,6 @@
 package edu.eltex.forms.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +14,17 @@ import java.util.List;
 @Builder
 public class QuestionRequestDTO {
 
+    private Integer id;
+
+    private Integer formId;
+
+    @NotNull(message = "Text is mandatory")
     private String text;
+
+    @NotNull(message = "Type is mandatory")
     private String type;
+
     private String imageUrl;
-    private List<AnswerResponseDTO> answers;
+
+    private List<OptionRequestDTO> options;
 }

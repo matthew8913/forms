@@ -3,19 +3,15 @@ package edu.eltex.forms.mapper;
 import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.entities.Form;
-import edu.eltex.forms.model.FormModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = OptionMapper.class)
+@Mapper(componentModel = "spring")
 public interface FormMapper {
 
-    @Mappings({
-            @Mapping(source = "creatorId", target = "creator.id"),
-            @Mapping(source = "creatorName", target = "creator.username"),
-    })
-    FormModel toModel(FormRequestDTO formRequestDTO);
+    FormMapper INSTANCE = Mappers.getMapper(FormMapper.class);
 
     @Mappings({
             @Mapping(source = "creator.id", target = "creatorId"),
@@ -24,5 +20,10 @@ public interface FormMapper {
     })
     FormResponseDTO toDto(Form formEntity);
 
-    Form toEntity(FormModel formModel);
+    @Mappings({
+            @Mapping(source = "creatorId", target = "creator.id"),
+            @Mapping(source = "creatorName", target = "creator.username"),
+            @Mapping(source = "questions", target = "questions")
+    })
+    Form toEntity(FormRequestDTO formRequestDTO);
 }
