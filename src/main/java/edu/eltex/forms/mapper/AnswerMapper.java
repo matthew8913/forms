@@ -8,24 +8,27 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring", uses = OptionMapper.class)
+@Mapper(componentModel = "spring", uses = {QuestionMapper.class, OptionMapper.class})
 public interface AnswerMapper {
-
-    @Mappings({
-            @Mapping(source = "completionId", target = "completion.id"),
-            @Mapping(source = "questionId", target = "question.id"),
-    })
-    AnswerModel toModel(AnswerRequestDTO answerRequestDTO);
 
     @Mappings({
             @Mapping(source = "completion.id", target = "completionId"),
             @Mapping(source = "question.id", target = "questionId"),
+            @Mapping(source = "selectedOptions", target = "selectedOptions"),
     })
     AnswerResponseDTO toDto(Answer answerEntity);
 
     @Mappings({
             @Mapping(source = "completionId", target = "completion.id"),
             @Mapping(source = "questionId", target = "question.id"),
+            @Mapping(source = "selectedOptions", target = "selectedOptions"),
     })
     Answer toEntity(AnswerRequestDTO answerRequestDTO);
+
+    @Mappings({
+            @Mapping(source = "completionId", target = "completion.id"),
+            @Mapping(source = "questionId", target = "question.id"),
+            @Mapping(source = "selectedOptions", target = "selectedOptions"),
+    })
+    AnswerModel toModel(AnswerRequestDTO answerRequestDTO);
 }

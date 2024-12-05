@@ -6,12 +6,9 @@ import edu.eltex.forms.entities.Form;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {QuestionMapper.class})
 public interface FormMapper {
-
-    FormMapper INSTANCE = Mappers.getMapper(FormMapper.class);
 
     @Mappings({
             @Mapping(source = "creator.id", target = "creatorId"),

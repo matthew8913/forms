@@ -18,10 +18,12 @@ import java.util.stream.StreamSupport;
 public class FormService {
 
     private final FormRepository formRepository;
+    private final FormMapper formMapper;
 
     @Autowired
-    public FormService(FormRepository formRepository) {
+    public FormService(FormRepository formRepository, FormMapper formMapper) {
         this.formRepository = formRepository;
+        this.formMapper = formMapper;
     }
 
     public FormResponseDTO createForm(FormRequestDTO formRequestDTO) {
@@ -29,7 +31,7 @@ public class FormService {
             throw new EntityExistsException("Form with title '" + formRequestDTO.getTitle() + "' already exists");
         }
 
-        Form formEntity = FormMapper.INSTANCE.toEntity(formRequestDTO);
+        Form formEntity = formMapper.toEntity(formRequestDTO);
 
         formEntity.getQuestions().forEach(question -> {
             question.setForm(formEntity);
@@ -39,31 +41,31 @@ public class FormService {
         });
 
         Form createdFormEntity = formRepository.save(formEntity);
-        return FormMapper.INSTANCE.toDto(createdFormEntity);
+        return formMapper.toDto(createdFormEntity);
     }
 
     public List<FormResponseDTO> getAllForms() {
         return StreamSupport.stream(formRepository.findAll().spliterator(), false)
-                .map(FormMapper.INSTANCE::toDto)
+                .map(formMapper::toDto)
                 .toList();
     }
 
     public List<FormResponseDTO> getAllFormsByCreatorName(String creatorName) {
         return formRepository.findAllByCreator_Username(creatorName).stream()
-                .map(FormMapper.INSTANCE::toDto)
+                .map(formMapper::toDto)
                 .toList();
     }
 
     public FormResponseDTO getFormByTitle(String title) {
         Form formEntity = formRepository.findByTitle(title)
                 .orElseThrow(() -> new EntityNotFoundException("Form with title '" + title + "' not found"));
-        return FormMapper.INSTANCE.toDto(formEntity);
+        return formMapper.toDto(formEntity);
     }
 
     public FormResponseDTO getFormById(Integer id) {
         Form formEntity = formRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Form not found"));
-        return FormMapper.INSTANCE.toDto(formEntity);
+        return formMapper.toDto(formEntity);
     }
 
     public boolean deleteForm(Integer id) {

@@ -14,6 +14,7 @@ import java.util.List;
 public class QuestionResponseDTO {
 
     private Integer id;
+    private Integer formId;
     private String text;
     private String type;
     private String imageUrl;

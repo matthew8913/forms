@@ -21,7 +21,7 @@ public interface StatisticRepository extends CrudRepository<Answer, Integer> {
     List<Answer> getNumericAnswers(@Param("formId") int formId);
 
     @Query("SELECT a FROM Answer a WHERE a.question.form.id = :formId AND a.question.type in ('SINGLE_CHOICE', 'MULTIPLE_CHOICE') ")
-    List<Answer> getChoisesAnswers(@Param("formId")int formId);
+    List<Answer> getChoicesAnswers(@Param("formId")int formId);
 
     @Query("SELECT o FROM Option o WHERE o.question.form.id = :formId AND o.question.type in ('SINGLE_CHOICE', 'MULTIPLE_CHOICE')")
     List<Option> getAllOptions(@Param("formId") int formId);

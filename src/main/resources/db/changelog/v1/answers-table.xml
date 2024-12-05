@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-answers-table" author="matthew">
+        <createTable tableName="answers">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="completion_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_answer_completion" references="completions(id)"/>
+            </column>
+            <column name="question_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_answer_question" references="questions(id)"/>
+            </column>
+            <column name="answer_text" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insert-answers-1" author="alexey">
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="1"/>
+            <column name="answer_text" value="35"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="2"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="3"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="4"/>
+            <column name="answer_text" value="Some interesting text about me"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="5"/>
+            <column name="answer_text" value="16"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="6"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="7"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="1"/>
+            <column name="question_id" value="8"/>
+            <column name="answer_text" value="Very cool"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-answers-2" author="alexey">
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="1"/>
+            <column name="answer_text" value="54"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="2"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="3"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="4"/>
+            <column name="answer_text" value="Professional older rapper"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="5"/>
+            <column name="answer_text" value="21"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="6"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="7"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="2"/>
+            <column name="question_id" value="8"/>
+            <column name="answer_text" value="Nice"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-answers-user3" author="alexey">
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="1"/>
+            <column name="answer_text" value="25"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="2"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="3"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="4"/>
+            <column name="answer_text" value="About user 3"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="5"/>
+            <column name="answer_text" value="40"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="6"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="7"/>
+        </insert>
+        <insert tableName="answers">
+            <column name="completion_id" value="3"/>
+            <column name="question_id" value="8"/>
+            <column name="answer_text" value="Might be much better"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

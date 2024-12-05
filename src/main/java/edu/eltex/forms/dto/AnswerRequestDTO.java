@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class AnswerRequestDTO {
 
     @NotNull(message = "Question id is mandatory")
-    private Integer questionId;
     private Integer completionId;
+    private Integer questionId;
     private String answerText;
-    private OptionRequestDTO selectedOption;
+    private List<OptionRequestDTO> selectedOptions;
 }
