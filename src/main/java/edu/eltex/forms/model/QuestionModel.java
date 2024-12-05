@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserModel {
+public class QuestionModel {
     private Integer id;
-    private String username;
-    private String password;
-    private String role;
+    private String text;
+    private String type;
+    private String imageUrl;
 }

@@ -27,6 +27,8 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    private String refreshToken;
+
     public enum Role {
         CREATOR,
         USER

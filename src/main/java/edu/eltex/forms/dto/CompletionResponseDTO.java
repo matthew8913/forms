@@ -5,15 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnswerResponseDTO {
+public class CompletionResponseDTO {
 
     private Integer id;
-    private Integer completionId;
-    private Integer questionId;
-    private String answerText;
-    private OptionResponseDTO selectedOption;
+    private Integer userId;
+    private Integer formId;
+    private List<AnswerResponseDTO> answers;
 }

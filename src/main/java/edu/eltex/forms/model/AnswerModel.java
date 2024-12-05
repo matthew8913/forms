@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserModel {
+public class AnswerModel {
     private Integer id;
-    private String username;
-    private String password;
-    private String role;
+    private CompletionModel completion;
+    private QuestionModel question;
+    private String text;
+    private OptionModel option;
 }

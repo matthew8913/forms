@@ -23,4 +23,12 @@ public class Option {
 
     @Column(nullable = false)
     private String text;
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public String getText() {
+        return text;
+    }
 }

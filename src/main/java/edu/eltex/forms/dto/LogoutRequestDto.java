@@ -1,4 +1,4 @@
-package edu.eltex.forms.model;
+package edu.eltex.forms.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserModel {
-    private Integer id;
+public class LogoutRequestDto {
     private String username;
-    private String password;
-    private String role;
 }

@@ -18,16 +18,29 @@ public class Answer {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "response_id", nullable = false)
-    private Response response;
+    @JoinColumn(name = "completion_id", nullable = false)
+    private Completion completion;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+    @Column(name = "answer_text")
     private String answerText;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "selected_option_id")
     private Option selectedOption;
+
+    public String getAnswerText() {
+        return answerText;
+    }
+
+    public Question getQuestion() {
+        return question;
+    }
+
+    public Option getSelectedOption() {
+        return selectedOption;
+    }
 }
