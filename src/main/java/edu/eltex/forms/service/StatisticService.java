@@ -25,13 +25,13 @@ public class StatisticService {
     private final StatisticRepository statisticRepository;
 
     private List<QuestionStatisticDTO> getChoicesQuestionStatistics(int formId, int numberOfCompletions) {
-        List<Answer> choicesAnswers = statisticRepository.getChoisesAnswers(formId);
+        List<Answer> choicesAnswers = statisticRepository.getChoicesAnswers(formId);
         List<Option> allOptions = statisticRepository.getAllOptions(formId);
 
         Map<String, List<String>> questionAnswersMap = choicesAnswers.stream()
                 .collect(Collectors.groupingBy(
                         answer -> answer.getQuestion().getText(),
-                        Collectors.mapping(answer -> answer.getSelectedOption().getText(), Collectors.toList())
+                        Collectors.flatMapping(answer -> answer.getSelectedOptions().stream().map(Option::getText), Collectors.toList())
                 ));
 
         Map<String, List<String>> allOptionsMap = allOptions.stream()
@@ -75,7 +75,7 @@ public class StatisticService {
                 .collect(Collectors.toList());
     }
 
-    private List<QuestionStatisticDTO> getTextQuestionStatistics(int formId){
+    private List<QuestionStatisticDTO> getTextQuestionStatistics(int formId) {
         List<Answer> textAnswers = statisticRepository.getTextAnswers(formId);
 
         Map<String, List<String>> textQuestionAnswersMap = textAnswers.stream()

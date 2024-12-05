@@ -8,10 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(
-        componentModel = "spring",
-        uses = {AnswerMapper.class, FormMapper.class, QuestionMapper.class, OptionMapper.class}
-)
+@Mapper(componentModel = "spring", uses = {AnswerMapper.class})
 public interface CompletionMapper {
 
     @Mappings({
@@ -33,8 +30,4 @@ public interface CompletionMapper {
             @Mapping(source = "answers", target = "answers"),
     })
     Completion toEntity(CompletionRequestDTO formModel);
-
-    Completion toEntity(CompletionModel formModel);
-
-
 }

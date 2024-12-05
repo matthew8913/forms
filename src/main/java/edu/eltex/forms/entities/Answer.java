@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "answers")
 @Data
@@ -28,19 +30,11 @@ public class Answer {
     @Column(name = "answer_text")
     private String answerText;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "selected_option_id")
-    private Option selectedOption;
-
-    public String getAnswerText() {
-        return answerText;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public Option getSelectedOption() {
-        return selectedOption;
-    }
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "answers_options",
+            joinColumns = @JoinColumn(name = "answer_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "option_id", referencedColumnName = "id")
+    )
+    private List<Option> selectedOptions;
 }

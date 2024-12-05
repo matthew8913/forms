@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,5 +17,5 @@ public class AnswerResponseDTO {
     private Integer completionId;
     private Integer questionId;
     private String answerText;
-    private OptionResponseDTO selectedOption;
+    private List<OptionResponseDTO> selectedOptions;
 }
