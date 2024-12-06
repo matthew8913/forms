@@ -82,7 +82,6 @@ nb-configuration.xml
 ## Other
 ##############################
 *.txt
-*.csv
 
 # Logs
 logs
