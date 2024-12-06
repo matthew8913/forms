@@ -43,4 +43,16 @@ public class Question {
         MULTIPLE_CHOICE,
         TEXT
     }
+
+    public String getText() {
+        return text;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Type getType() {
+        return type;
+    }
 }

@@ -17,8 +17,77 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="insert-answers_options-csv" author="alex">
-        <loadData tableName="answers_options" file="db/data/answers_options.csv"/>
+    <changeSet id="insert-answer-options" author="alexey">
+        <insert tableName="answers_options">
+            <column name="answer_id" value="2"/>
+            <column name="option_id" value="2"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="3"/>
+            <column name="option_id" value="5"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="3"/>
+            <column name="option_id" value="6"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="6"/>
+            <column name="option_id" value="8"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="7"/>
+            <column name="option_id" value="10"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="7"/>
+            <column name="option_id" value="12"/>
+        </insert>
+
+        <insert tableName="answers_options">
+            <column name="answer_id" value="10"/>
+            <column name="option_id" value="1"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="11"/>
+            <column name="option_id" value="4"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="11"/>
+            <column name="option_id" value="5"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="11"/>
+            <column name="option_id" value="6"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="14"/>
+            <column name="option_id" value="8"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="15"/>
+            <column name="option_id" value="10"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="15"/>
+            <column name="option_id" value="11"/>
+        </insert>
+
+        <insert tableName="answers_options">
+            <column name="answer_id" value="18"/>
+            <column name="option_id" value="2"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="19"/>
+            <column name="option_id" value="4"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="22"/>
+            <column name="option_id" value="8"/>
+        </insert>
+        <insert tableName="answers_options">
+            <column name="answer_id" value="23"/>
+            <column name="option_id" value="10"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>
