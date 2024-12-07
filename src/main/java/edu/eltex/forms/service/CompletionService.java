@@ -5,7 +5,6 @@ import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.entities.Completion;
 import edu.eltex.forms.mapper.CompletionMapper;
 import edu.eltex.forms.repository.CompletionRepository;
-import edu.eltex.forms.repository.OptionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.stream.StreamSupport;
 @AllArgsConstructor
 public class CompletionService {
 
-    private final OptionRepository optionRepository;
+    private final OptionService optionService;
     private final CompletionRepository completionRepository;
     private final CompletionMapper completionMapper;
 
@@ -44,10 +43,8 @@ public class CompletionService {
             if (answer.getSelectedOptions() != null) {
                 // Everything except options is new and needed to be saved, but options are not
                 // Replace options by already existing ones to stop creating new options on every answer
-                // Ignoring = Creating options on every POST and bad statistics
-                var existingOptions = answer.getSelectedOptions().stream()
-                        .map(option -> optionRepository.findByTextAndQuestion(option.getText(), answer.getQuestion()))
-                        .toList();
+                // Ignoring = Creating options on every POST and bad statistics results
+                var existingOptions = optionService.convertIntoExistingOptions(answer.getSelectedOptions(), answer.getQuestion());
                 answer.setSelectedOptions(existingOptions);
             }
         });
