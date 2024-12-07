@@ -3,6 +3,7 @@ package edu.eltex.forms.service;
 import edu.eltex.forms.dto.AuthRequestDto;
 import edu.eltex.forms.dto.AuthResponseDto;
 import edu.eltex.forms.dto.UserRequestDto;
+import edu.eltex.forms.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +36,8 @@ public class AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            return userDetails.getUsername().equals(userId.toString());
+            UserResponseDto userResponseDto = userService.findUserById(userId);
+            return userDetails.getUsername().equals(userResponseDto.getUsername());
         }
         return false;
     }
