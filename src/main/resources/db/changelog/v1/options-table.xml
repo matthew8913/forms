@@ -11,12 +11,20 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="question_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_option_question" references="questions(id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="text" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="options"
+                baseColumnNames="question_id"
+                constraintName="fk_option_question"
+                referencedTableName="questions"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
     </changeSet>
 
     <changeSet id="insert-options-1" author="matthew">
@@ -51,30 +59,36 @@
 
     <changeSet id="insert-options-2" author="matthew">
         <insert tableName="options">
-            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
+            <column name="question_id"
+                    valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
             <column name="text" value="Зенит"/>
         </insert>
         <insert tableName="options">
-            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
+            <column name="question_id"
+                    valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
             <column name="text" value="Краснодар"/>
         </insert>
         <insert tableName="options">
-            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
+            <column name="question_id"
+                    valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимую команду')"/>
             <column name="text" value="Динамо Москва"/>
         </insert>
     </changeSet>
 
     <changeSet id="insert-options-multiple-choice-2" author="matthew">
         <insert tableName="options">
-            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
+            <column name="question_id"
+                    valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
             <column name="text" value="Математика"/>
         </insert>
         <insert tableName="options">
-            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
+            <column name="question_id"
+                    valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
             <column name="text" value="Физика"/>
         </insert>
         <insert tableName="options">
-            <column name="question_id" valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
+            <column name="question_id"
+                    valueComputed="(SELECT id FROM questions WHERE text = 'Выбери любимые предметы')"/>
             <column name="text" value="Литература"/>
         </insert>
     </changeSet>

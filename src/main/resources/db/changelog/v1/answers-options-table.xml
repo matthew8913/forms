@@ -5,20 +5,35 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-
     <changeSet id="create-answers-options-table" author="alex">
         <createTable tableName="answers_options">
             <column name="answer_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_answers_options_1" references="answers(id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="option_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_answers_options_2" references="options(id)"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="answers_options"
+                baseColumnNames="answer_id"
+                constraintName="fk_answers_options_1"
+                referencedTableName="answers"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="answers_options"
+                baseColumnNames="option_id"
+                constraintName="fk_answers_options_2"
+                referencedTableName="options"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="insert-answers_options-csv" author="alex">
-        <loadData tableName="answers_options" file="db/data/answers_options.csv"/>
-    </changeSet>
+<!--    <changeSet id="insert-answers_options-csv" author="alex">-->
+<!--        <loadData tableName="answers_options" file="db/data/answers_options.csv"/>-->
+<!--    </changeSet>-->
 
 </databaseChangeLog>
