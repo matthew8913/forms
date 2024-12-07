@@ -94,6 +94,14 @@ class CompletionControllerTest {
     }
 
     @Test
+    void createCompletionInvalid() throws Exception {
+        final String uri = "/api/v1/completions";
+        final CompletionRequestDTO req = CompletionRequestDTO.builder().userId(null).formId(null).answers(null).build();
+        mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content(mapperBuilder.build().writeValueAsString(req)))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
     void deleteCompletionOkIndex() throws Exception {
         final String uri = "/api/v1/completions/1";
         when(service.deleteCompletion(Mockito.anyInt())).thenReturn(true);

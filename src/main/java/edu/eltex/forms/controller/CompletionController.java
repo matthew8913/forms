@@ -39,6 +39,6 @@ public class CompletionController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteCompletion(@PathVariable Integer id) {
         boolean deleted = completionService.deleteCompletion(id);
-        return deleted ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Completion with given ID not found");
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Completion with given ID not found");
     }
 }

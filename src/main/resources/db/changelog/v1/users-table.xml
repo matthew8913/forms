@@ -25,10 +25,8 @@
         </createTable>
     </changeSet>
 
-    <!--    Works only without spring security password coding-->
-
-    <!--    <changeSet id="insert-users-csv" author="alex">-->
-    <!--        <loadData tableName="users" file="db/data/users.csv"/>-->
-    <!--    </changeSet>-->
+    <changeSet id="insert-users-csv" author="alex">
+        <loadData tableName="users" file="db/data/users.csv"/>
+    </changeSet>
 
 </databaseChangeLog>
