@@ -70,7 +70,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateUser_success() {
+    public void testCreateUserSuccess() {
         UserRequestDto userRequest = UserRequestDto.builder()
                 .username("testuser")
                 .password("password")
@@ -84,7 +84,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateUser_duplicateUsername() {
+    public void testCreateUserDuplicateUsername() {
         UserRequestDto userRequest = UserRequestDto.builder()
                 .username("duplicateUser")
                 .password("password")
