@@ -21,14 +21,14 @@ public class UserController {
 
     private final UserService userService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('CREATOR')")
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         List<UserResponseDto> users = userService.findAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('CREATOR') or @authService.isAuthenticatedUserWithId(#id)")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Integer id) {
         UserResponseDto user = userService.findUserById(id);
