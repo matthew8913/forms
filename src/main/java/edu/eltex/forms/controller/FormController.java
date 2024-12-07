@@ -3,6 +3,7 @@ package edu.eltex.forms.controller;
 import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.service.FormService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class FormController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<FormResponseDTO> createForm(@RequestBody FormRequestDTO formRequestDTO) {
+    public ResponseEntity<FormResponseDTO> createForm(@Valid @RequestBody FormRequestDTO formRequestDTO) {
         FormResponseDTO formResponseDTO = formService.createForm(formRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(formResponseDTO);
     }
