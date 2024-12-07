@@ -11,13 +11,29 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="completion_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_answer_completion" references="completions(id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="question_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_answer_question" references="questions(id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="answer_text" type="TEXT"/>
         </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="answers"
+                baseColumnNames="completion_id"
+                constraintName="fk_answer_completion"
+                referencedTableName="completions"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="answers"
+                baseColumnNames="question_id"
+                constraintName="fk_answer_question"
+                referencedTableName="questions"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
     </changeSet>
 
     <changeSet id="insert-answers-1" author="alexey">
