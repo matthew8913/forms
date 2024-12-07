@@ -48,16 +48,15 @@ export default {
       errorMessage: ''
     };
   },
-  methods: {
-    async handleRegistration() {
-      this.errorMessage = ''; // Очищаем сообщение об ошибке перед каждым запросом
 
-      // Проверка совпадения паролей
+  methods: {
+    // Метод обработки регистрации
+    async handleRegistration() {
+      this.errorMessage = ''; 
       if (this.password !== this.confirmPassword) {
         this.errorMessage = 'Passwords do not match';
         return;
       }
-
       try {
         const response = await fetch(`${API_BASE_URL}/auth/register`, {
           method: 'POST',
@@ -74,7 +73,7 @@ export default {
         const data = await response.json();
         console.log(data);
       } catch (error) {
-        this.errorMessage = error.message || 'An error occurred';
+        this.errorMessage = error.message;
       }
     }
   }

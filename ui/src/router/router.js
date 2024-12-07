@@ -2,12 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 import WelcomePage from '../views/WelcomePage.vue';
 import Login from '../views/Login.vue';
 import Registration from '../views/Registration.vue';
+import FormCreation from '@/views/FormCreation.vue';
 import { authService } from '../service/authService';
 
 const routes = [
   { path: '/', component: WelcomePage },
   { path: '/login', component: Login },
   { path: '/registration', component: Registration },
+  { path: '/create-form', component: FormCreation },
 ];
 
 const router = createRouter({
@@ -16,7 +18,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const publicRoutes = ['/', '/login', '/registration'];
+    const publicRoutes = ['/', '/login', '/registration','/create-form'];
   
     if (!publicRoutes.includes(to.path) && !authService.hasRefreshToken()) {
       next('/');

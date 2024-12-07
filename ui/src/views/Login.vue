@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { authService } from '@/service/authService.js';
 import { API_BASE_URL } from '../../config.js';
 
 export default {
@@ -57,7 +58,8 @@ export default {
           return;
         }
         const data = await response.json();
-        console.log(data);
+        authService.setTokens(data.accessToken, data.refreshToken)
+        console.log(data.accessToken, data.refreshToken)
       } catch (error) {
         this.errorMessage = error.message;
       }
