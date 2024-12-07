@@ -11,12 +11,28 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_completion_user" references="users(id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="form_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_completion_form" references="form(id)"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="completions"
+                baseColumnNames="user_id"
+                constraintName="fk_completion_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="completions"
+                baseColumnNames="form_id"
+                constraintName="fk_completion_form"
+                referencedTableName="form"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
     </changeSet>
 
     <changeSet id="insert-completion-1" author="alexey">
