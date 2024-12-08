@@ -58,8 +58,9 @@ export default {
           return;
         }
         const data = await response.json();
-        authService.setTokens(data.accessToken, data.refreshToken)
-        console.log(data.accessToken, data.refreshToken)
+        authService.setTokens(data.accessToken, data.refreshToken, data.role);
+        console.log(data.accessToken, data.refreshToken, data.role);
+        this.$router.push('/form-list');
       } catch (error) {
         this.errorMessage = error.message;
       }

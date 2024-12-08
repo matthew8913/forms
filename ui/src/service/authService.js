@@ -1,5 +1,3 @@
-import { API_BASE_URL } from '../../config.js';
-
 export const authService = {
   accessToken: null,
   refreshToken: null,
@@ -7,8 +5,23 @@ export const authService = {
   setTokens(accessToken, refreshToken) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
   },
-//  Метод обновления access токена
+
+  getTokens() {
+    this.accessToken = localStorage.getItem('accessToken');
+    this.refreshToken = localStorage.getItem('refreshToken');
+    return { accessToken: this.accessToken, refreshToken: this.refreshToken };
+  },
+
+  clearTokens() {
+    this.accessToken = null;
+    this.refreshToken = null;
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  },
+
   async refreshAccessToken() {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
@@ -32,11 +45,11 @@ export const authService = {
     }
   },
 
-//   Метод получения данных с использованием access токена и его обновлением, если он истёк
   async fetchWithToken(url, options = {}) {
     const headers = options.headers || {};
-    if (this.accessToken) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`;
+    const { accessToken } = this.getTokens();
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
     }
 
     try {
@@ -56,6 +69,6 @@ export const authService = {
   },
 
   hasRefreshToken() {
-    return !!this.refreshToken;
+    return !!localStorage.getItem('refreshToken');
   }
 };

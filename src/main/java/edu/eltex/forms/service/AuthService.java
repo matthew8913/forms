@@ -4,6 +4,7 @@ import edu.eltex.forms.dto.AuthRequestDto;
 import edu.eltex.forms.dto.AuthResponseDto;
 import edu.eltex.forms.dto.UserRequestDto;
 import edu.eltex.forms.dto.UserResponseDto;
+import edu.eltex.forms.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +30,8 @@ public class AuthService {
         final String jwt = jwtService.generateToken(userDetails);
         final String refreshToken = refreshTokenService.createRefreshToken(authRequest.getUsername());
         userService.saveRefreshToken(authRequest.getUsername(), refreshToken);
-        return new AuthResponseDto(jwt, refreshToken);
+        User.Role role = User.Role.valueOf(userService.findUserByUsername(authRequest.getUsername()).getRole());
+        return new AuthResponseDto(jwt, refreshToken, role);
     }
 
     public boolean isAuthenticatedUserWithId(Integer userId) {
