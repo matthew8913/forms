@@ -1,6 +1,9 @@
 package edu.eltex.forms.controller;
 
-import edu.eltex.forms.dto.*;
+import edu.eltex.forms.dto.AuthRequestDto;
+import edu.eltex.forms.dto.AuthResponseDto;
+import edu.eltex.forms.dto.LogoutRequestDto;
+import edu.eltex.forms.dto.UserRequestDto;
 import edu.eltex.forms.entities.User;
 import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.repository.UserRepository;
@@ -31,7 +34,6 @@ class AuthControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-
 
 
     @BeforeEach

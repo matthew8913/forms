@@ -46,7 +46,7 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setup() {
-        userService = new UserService(passwordEncoder,userRepository, userMapper);
+        userService = new UserService(passwordEncoder, userRepository, userMapper);
         userRepository.deleteAll();
     }
 
