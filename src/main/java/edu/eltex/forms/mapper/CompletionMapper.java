@@ -3,8 +3,6 @@ package edu.eltex.forms.mapper;
 import edu.eltex.forms.dto.CompletionRequestDTO;
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.entities.Completion;
-import edu.eltex.forms.model.CompletionModel;
-import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

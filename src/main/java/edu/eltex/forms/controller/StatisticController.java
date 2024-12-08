@@ -19,7 +19,7 @@ public class StatisticController {
     private final StatisticService statisticService;
 
     @GetMapping("/{formId}")
-    public ResponseEntity<StatisticDTO> getNumberOfCompletions(@PathVariable Integer formId){
+    public ResponseEntity<StatisticDTO> getNumberOfCompletions(@PathVariable Integer formId) {
         StatisticDTO completions = statisticService.getFormStatistic(formId);
         return ResponseEntity.ok(completions);
     }

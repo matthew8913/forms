@@ -6,17 +6,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 public class JwtServiceTest {
 
-    private JwtService jwtService;
     private static final SecretKey SECRET_KEY = JwtService.SECRET_KEY;
+    private JwtService jwtService;
 
     @BeforeEach
     public void setUp() {
@@ -83,7 +85,7 @@ public class JwtServiceTest {
 
         Claims claims = jwtService.extractAllClaims(token);
 
-        claims.setExpiration(new Date(System.currentTimeMillis() +1000));
+        claims.setExpiration(new Date(System.currentTimeMillis() + 1000));
         String expiredToken = Jwts.builder()
                 .setClaims(claims)
                 .signWith(SECRET_KEY)

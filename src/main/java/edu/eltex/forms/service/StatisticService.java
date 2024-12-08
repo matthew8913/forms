@@ -10,6 +10,8 @@ import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -92,6 +94,7 @@ public class StatisticService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public StatisticDTO getFormStatistic(int formId) {
         Integer numberOfCompletions = statisticRepository.countNumberOfCompletions(formId);
 
