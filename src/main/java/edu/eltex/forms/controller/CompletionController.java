@@ -3,21 +3,20 @@ package edu.eltex.forms.controller;
 import edu.eltex.forms.dto.CompletionRequestDTO;
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.service.CompletionService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/completions")
+@RequiredArgsConstructor
 public class CompletionController {
-    private final CompletionService completionService;
 
-    public CompletionController(CompletionService completionService) {
-        this.completionService = completionService;
-    }
+    private final CompletionService completionService;
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<CompletionResponseDTO>> getAllCompletions() {
@@ -32,7 +31,7 @@ public class CompletionController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<CompletionResponseDTO> createCompletion(@Validated @RequestBody CompletionRequestDTO completionRequestDTO) {
+    public ResponseEntity<CompletionResponseDTO> createCompletion(@Valid @RequestBody CompletionRequestDTO completionRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(completionService.createCompletion(completionRequestDTO));
     }
 

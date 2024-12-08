@@ -1,5 +1,6 @@
 package edu.eltex.forms.entities;
 
+import edu.eltex.forms.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,12 +26,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private UserRole role;
 
     private String refreshToken;
-
-    public enum Role {
-        CREATOR,
-        USER
-    }
 }

@@ -10,15 +10,17 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring", uses = OptionMapper.class)
 public interface QuestionMapper {
 
+
+    @Mappings({
+            @Mapping(ignore = true, target = "id"),
+            @Mapping(ignore = true, target = "form"),
+            @Mapping(source = "options", target = "options"),
+    })
+    Question toEntity(QuestionRequestDTO questionRequestDTO);
+
     @Mappings({
             @Mapping(source = "form.id", target = "formId"),
             @Mapping(source = "options", target = "options"),
     })
     QuestionResponseDTO toDto(Question questionEntity);
-
-    @Mappings({
-            @Mapping(source = "formId", target = "form.id"),
-            @Mapping(source = "options", target = "options"),
-    })
-    Question toEntity(QuestionRequestDTO questionRequestDTO);
 }
