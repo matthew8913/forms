@@ -38,10 +38,10 @@ public class JwtService {
     }
 
     Boolean isTokenExpired(String token) {
-        try{
+        try {
             extractAllClaims(token);
             return false;
-        }catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             return true;
         }
     }
