@@ -40,6 +40,7 @@ public class UserService {
     }
 
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        userRequestDto.setRole("USER");
         User user = userMapper.toEntity(userRequestDto);
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new EntityExistsException("User with username: " + user.getUsername() + " already exists");

@@ -27,6 +27,7 @@
 <script>
 import QuestionComponent from '../components/QuestionCreation.vue';
 import { API_BASE_URL } from '../../config.js';
+import { authService } from '@/service/authService';
 
 export default {
     components: {
@@ -34,14 +35,15 @@ export default {
     },
     data() {
         return {
-            questions: [],
-            creatorId: 2,
-            creatorName: 'creator1',
-            title: '',
-            description: '',
+            questions: [], 
+            creatorId: authService.getUserId(),
+            creatorName: authService.getUsername(), 
+            title: '', 
+            description: '', 
         };
     },
     methods: {
+        // Метод для добавления нового вопроса в опрос
         addQuestion() {
             this.questions.push({
                 id: null,
@@ -52,12 +54,18 @@ export default {
                 options: [],
             });
         },
+
+        // Метод для обновления вопроса по индексу
         updateQuestion(index, updatedQuestion) {
             this.questions[index] = updatedQuestion;
         },
+
+        // Метод для удаления вопроса по индексу
         removeQuestion(index) {
             this.questions.splice(index, 1);
         },
+
+        // Метод для создания опроса
         async createform() {
             const form = {
                 id: null,
@@ -67,10 +75,10 @@ export default {
                 description: this.description,
                 questions: this.questions,
             };
-            console.log(JSON.stringify(form, null, 2));
 
             try {
-                const response = await fetch(`${API_BASE_URL}/forms`, {
+                // Отправка запроса на создание опроса с использованием токена
+                const response = await authService.fetchWithToken(`${API_BASE_URL}/forms`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -78,12 +86,13 @@ export default {
                     body: JSON.stringify(form),
                 });
 
+                // Проверка статуса ответа
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Ошибка при создании опроса:', errorData);
-                    return;
+                    throw new Error(errorData.message)
                 }
 
+                // Получение данных о созданном опросе
                 const data = await response.json();
                 console.log('Опрос успешно создан:', data);
             } catch (error) {

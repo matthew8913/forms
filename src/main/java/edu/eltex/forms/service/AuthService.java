@@ -30,8 +30,11 @@ public class AuthService {
         final String jwt = jwtService.generateToken(userDetails);
         final String refreshToken = refreshTokenService.createRefreshToken(authRequest.getUsername());
         userService.saveRefreshToken(authRequest.getUsername(), refreshToken);
-        User.Role role = User.Role.valueOf(userService.findUserByUsername(authRequest.getUsername()).getRole());
-        return new AuthResponseDto(jwt, refreshToken, role);
+        UserResponseDto user = userService.findUserByUsername(authRequest.getUsername());
+        User.Role role = User.Role.valueOf(user.getRole());
+        String username = user.getUsername();
+        Long id = Long.valueOf(user.getId());
+        return new AuthResponseDto(jwt, refreshToken, role, id,username);
     }
 
     public boolean isAuthenticatedUserWithId(Integer userId) {

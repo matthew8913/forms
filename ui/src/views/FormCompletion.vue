@@ -3,7 +3,8 @@
         <h1 v-if="form.title" class="text-center mb-4">{{ form.title }}</h1>
         <p v-if="form.description" class="text-center mb-4">{{ form.description }}</p>
         <div v-for="(question, index) in form.questions" :key="question.id" class="mb-3">
-            <QuestionComponent :question="question" :index="index" ref="questions" @update:answer="updateAnswer(index, $event)" />
+            <QuestionComponent :question="question" :index="index" ref="questions"
+                @update:answer="updateAnswer(index, $event)" />
         </div>
         <div class="d-flex justify-content-center">
             <button @click="submitForm" class="btn btn-success">Завершить опрос</button>
@@ -14,6 +15,7 @@
 <script>
 import QuestionComponent from '../components/QuestionCompletion.vue';
 import { API_BASE_URL } from '../../config.js';
+import { authService } from '@/service/authService';
 
 export default {
     components: {
@@ -37,13 +39,13 @@ export default {
         await this.fetchForm(formId);
     },
     methods: {
+        //метод получения формы
         async fetchForm(formId) {
             try {
-                const response = await fetch(`${API_BASE_URL}/forms/${formId}`);
+                const response = await authService.fetchWithToken(`${API_BASE_URL}/forms/${formId}`);
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Ошибка при загрузке опроса:', errorData);
-                    return;
+                    throw new Error(errorData.message)
                 }
                 const data = await response.json();
                 this.form = data;
@@ -55,6 +57,26 @@ export default {
             this.$set(this.answers, index, answer);
         },
         submitForm() {
+            const unansweredQuestions = this.$refs.questions.filter((questionComponent, index) => {
+                const question = questionComponent.$props.question;
+                const answer = questionComponent.answer;
+
+                if (question.type === 'NUMERIC' || question.type === 'TEXT') {
+                    return !answer; 
+                } else if (question.type === 'SINGLE_CHOICE') {
+                    return answer === null || answer === undefined; 
+                } else if (question.type === 'MULTIPLE_CHOICE') {
+                    return !Array.isArray(answer) || answer.length === 0;
+                }
+
+                return false; 
+            });
+
+            if (unansweredQuestions.length > 0) {
+                alert('Пожалуйста, ответьте на все вопросы перед завершением опроса.');
+                return;
+            }
+
             this.answers = this.$refs.questions.map((questionComponent) => {
                 const question = questionComponent.$props.question;
                 const answer = questionComponent.answer;
@@ -87,7 +109,7 @@ export default {
 
             const completionRequest = {
                 answers: this.answers,
-                userId: 2, 
+                userId: authService.getUserId(),
                 formId: this.form.id,
             };
 
@@ -96,7 +118,7 @@ export default {
         },
         async sendCompletionData(completionRequest) {
             try {
-                const response = await fetch(`${API_BASE_URL}/completions`, {
+                const response = await authService.fetchWithToken(`${API_BASE_URL}/completions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

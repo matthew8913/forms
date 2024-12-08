@@ -60,7 +60,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void createAuthenticationToken() {
+    void login() {
         registerUser();
 
         AuthRequestDto authRequest = AuthRequestDto.builder()
@@ -85,7 +85,7 @@ class AuthControllerTest {
 
     @Test
     void logoutUser() {
-        createAuthenticationToken();
+        login();
 
         LogoutRequestDto logoutRequest = new LogoutRequestDto("testUser");
 

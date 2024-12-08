@@ -18,7 +18,7 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<AuthResponseDto> createAuthenticationToken(@RequestBody AuthRequestDto authRequest) {
+    public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto authRequest) {
         AuthResponseDto authResponse = authService.getTokens(authRequest);
         return ResponseEntity.ok(authResponse);
     }

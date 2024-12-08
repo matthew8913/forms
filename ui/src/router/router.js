@@ -5,17 +5,19 @@ import Registration from "../views/Registration.vue";
 import FormCreation from "@/views/FormCreation.vue";
 import FormCompletion from "@/views/FormCompletion.vue";
 import { authService } from "../service/authService";
+import FormList from "@/views/FormList.vue";
+import Statistics from "@/views/Statistics.vue";
+import UserProfilePage from "@/views/UserProfilePage.vue";
 
 const routes = [
   { path: "/", component: WelcomePage },
   { path: "/login", component: Login },
   { path: "/registration", component: Registration },
   { path: "/create-form", component: FormCreation },
-  {
-    path: "/complete-form/:formId",
-    name: "FormCompletion",
-    component: FormCompletion,
-  },
+  { path: "/lk", component: UserProfilePage },
+  { path: "/complete-form/:formId", component: FormCompletion },
+  { path: "/form-list", component: FormList },
+  { path: "/statistics/:formId", component: Statistics },
 ];
 
 const router = createRouter({
@@ -23,14 +25,26 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicRoutes = ["/", "/login", "/registration", "/create-form", "/complete-form/:formId"];
+router.beforeEach((to, from, next) => {
+  const publicRoutes = ["/", "/login", "/registration"];
+  const protectedRoutes = [
+    "/create-form",
+    "/lk",
+    "/complete-form/:formId",
+    "/form-list",
+    "/statistics/:formId",
+  ];
 
-//   if (!publicRoutes.includes(to.path) && !authService.hasRefreshToken()) {
-//     next("/");
-//   } else {
-//     next();
-//   }
-// });
+  if (publicRoutes.includes(to.path) && authService.hasRefreshToken()) {
+    next("/form-list");
+  } else if (
+    protectedRoutes.includes(to.path) &&
+    !authService.hasRefreshToken()
+  ) {
+    next("/");
+  } else {
+    next();
+  }
+});
 
 export default router;
