@@ -5,6 +5,7 @@ import edu.eltex.forms.dto.AuthResponseDto;
 import edu.eltex.forms.dto.LogoutRequestDto;
 import edu.eltex.forms.dto.UserRequestDto;
 import edu.eltex.forms.entities.User;
+import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class AuthControllerTest {
         UserRequestDto registrationRequest = UserRequestDto.builder()
                 .username("testUser")
                 .password("password")
-                .role("USER")
+                .role(UserRole.USER)
                 .build();
 
         HttpHeaders headers = new HttpHeaders();

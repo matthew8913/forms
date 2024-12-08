@@ -1,6 +1,6 @@
 package edu.eltex.forms.service;
 
-import edu.eltex.forms.dto.statistic.ChoisesStatisticDTO;
+import edu.eltex.forms.dto.statistic.ChoicesStatisticDTO;
 import edu.eltex.forms.dto.statistic.NumericStatisticDTO;
 import edu.eltex.forms.dto.statistic.QuestionStatisticDTO;
 import edu.eltex.forms.dto.statistic.StatisticDTO;
@@ -47,7 +47,7 @@ public class StatisticService {
                     List<String> answeredAnswers = questionAnswersMap.getOrDefault(entry.getKey(), new ArrayList<>());
                     List<String> allPossibleAnswers = entry.getValue();
 
-                    ChoisesStatisticDTO choicesStatistic = ChoisesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
+                    ChoicesStatisticDTO choicesStatistic = ChoicesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
 
                     return QuestionStatisticDTO.builder()
                             .questionText(entry.getKey())

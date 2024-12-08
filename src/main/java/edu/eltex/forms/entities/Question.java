@@ -1,5 +1,6 @@
 package edu.eltex.forms.entities;
 
+import edu.eltex.forms.enums.QuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,18 +30,11 @@ public class Question {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private QuestionType type;
 
     private String imageUrl;
 
     @Builder.Default
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
-
-    public enum Type {
-        NUMERIC,
-        SINGLE_CHOICE,
-        MULTIPLE_CHOICE,
-        TEXT
-    }
 }

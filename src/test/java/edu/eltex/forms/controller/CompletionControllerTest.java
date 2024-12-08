@@ -82,17 +82,21 @@ class CompletionControllerTest {
     void createCompletionValid() throws Exception {
         final String uri = "/api/v1/completions";
         final CompletionRequestDTO req = CompletionRequestDTO.builder().userId(10).formId(100).answers(List.of(
-                AnswerRequestDTO.builder().completionId(1).answerText("TESTING").build(),
-                AnswerRequestDTO.builder().completionId(1).answerText("TESTING").build()
+                AnswerRequestDTO.builder().questionId(1).answerText("TESTING").build(),
+                AnswerRequestDTO.builder().questionId(1).answerText("TESTING").build()
         )).build();
         final CompletionResponseDTO resp = CompletionResponseDTO.builder().id(1).userId(10).formId(100).answers(List.of(
-                AnswerResponseDTO.builder().id(1).completionId(1).answerText("TESTING").build(),
-                AnswerResponseDTO.builder().id(1).completionId(1).answerText("TESTING").build()
+                AnswerResponseDTO.builder().id(1).questionId(1).completionId(1).answerText("TESTING").build(),
+                AnswerResponseDTO.builder().id(1).questionId(1).completionId(1).answerText("TESTING").build()
         )).build();
+
+        String reqJSON = mapperBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(req);
+        String respJSON = mapperBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(resp);
+
         when(service.createCompletion(Mockito.any())).thenReturn(resp);
-        mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content(mapperBuilder.build().writeValueAsString(req)))
+        mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON).content(reqJSON))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().json(mapperBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(resp)));
+                .andExpect(content().json(respJSON));
     }
 
     @Test

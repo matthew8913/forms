@@ -2,6 +2,8 @@ package edu.eltex.forms.service;
 
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.entities.*;
+import edu.eltex.forms.enums.UserRole;
+import edu.eltex.forms.enums.QuestionType;
 import edu.eltex.forms.mapper.CompletionMapper;
 import edu.eltex.forms.repository.CompletionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,8 +40,8 @@ class CompletionServiceTest {
 
     @BeforeEach
     void setUp() {
-        User dummyUser = new User(1, "username", "pass", User.Role.CREATOR, "token");
-        Question dummyQuestion = new Question(6, null, "question text", Question.Type.MULTIPLE_CHOICE, "url", null);
+        User dummyUser = new User(1, "username", "pass", UserRole.CREATOR, "token");
+        Question dummyQuestion = new Question(6, null, "question text", QuestionType.MULTIPLE_CHOICE, "url", null);
         Form dummyForm = new Form(12, dummyUser, "title", "description", List.of(dummyQuestion));
         dummyQuestion.setForm(dummyForm);
 

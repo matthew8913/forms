@@ -2,6 +2,7 @@ package edu.eltex.forms.service;
 
 import edu.eltex.forms.dto.UserRequestDto;
 import edu.eltex.forms.dto.UserResponseDto;
+import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.mapper.UserMapper;
 import edu.eltex.forms.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
@@ -31,7 +32,6 @@ public class UserServiceTest {
     public static GenericContainer<?> h2Container = new GenericContainer<>("buildo/h2database")
             .withExposedPorts(9092);
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -55,13 +55,13 @@ public class UserServiceTest {
         userService.createUser(UserRequestDto.builder()
                 .username("user1")
                 .password("password")
-                .role("USER")
+                .role(UserRole.USER)
                 .build());
 
         userService.createUser(UserRequestDto.builder()
                 .username("user2")
                 .password("password")
-                .role("CREATOR")
+                .role(UserRole.CREATOR)
                 .build());
 
         List<UserResponseDto> users = userService.findAllUsers();
@@ -74,7 +74,7 @@ public class UserServiceTest {
         UserRequestDto userRequest = UserRequestDto.builder()
                 .username("testuser")
                 .password("password")
-                .role("USER")
+                .role(UserRole.USER)
                 .build();
 
         UserResponseDto createdUser = userService.createUser(userRequest);
@@ -88,7 +88,7 @@ public class UserServiceTest {
         UserRequestDto userRequest = UserRequestDto.builder()
                 .username("duplicateUser")
                 .password("password")
-                .role("USER")
+                .role(UserRole.USER)
                 .build();
 
         userService.createUser(userRequest);
