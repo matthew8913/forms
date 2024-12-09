@@ -6,6 +6,8 @@ import edu.eltex.forms.entities.Form;
 import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.entities.User;
+import edu.eltex.forms.enums.QuestionType;
+import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.mapper.FormMapper;
 import edu.eltex.forms.repository.FormRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,7 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class FormServiceTest {
@@ -39,21 +42,21 @@ class FormServiceTest {
 
     @BeforeEach
     void setUp() {
-        User u1 = new User(1, "test_username", "12345", User.Role.CREATOR, "test_token");
-        Question q1 = new Question(1, null, "How old are you?", Question.Type.NUMERIC, null, null);
+        User u1 = new User(1, "test_username", "12345", UserRole.CREATOR, "test_token");
+        Question q1 = new Question(1, null, "How old are you?", QuestionType.NUMERIC, null, null);
         Form f1 = new Form(1, u1, "test_title_1", "test_description_1", List.of(q1));
         q1.setForm(f1);
 
-        Question q2 = new Question(2, null, "How are you?", Question.Type.SINGLE_CHOICE, null, null);
+        Question q2 = new Question(2, null, "How are you?", QuestionType.SINGLE_CHOICE, null, null);
         Option o1 = new Option(1, q2, "Good");
         Option o2 = new Option(2, q2, "Bad");
         q2.setOptions(List.of(o1, o2));
-        Question q3 = new Question(3, null, "How old are you?", Question.Type.NUMERIC, null, null);
+        Question q3 = new Question(3, null, "How old are you?", QuestionType.NUMERIC, null, null);
         Form f2 = new Form(2, u1, "test_title_2", "test_description_2", List.of(q2, q3));
         q2.setForm(f2);
         q3.setForm(f2);
 
-        User u2 = new User(2, "test_username_2", "123456", User.Role.CREATOR, "test_token_2");
+        User u2 = new User(2, "test_username_2", "123456", UserRole.CREATOR, "test_token_2");
         Form f3 = new Form(3, u2, "test_title_3", "test_description_3", null);
 
         forms = List.of(f1, f2, f3);
