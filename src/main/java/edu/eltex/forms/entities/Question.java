@@ -55,4 +55,16 @@ public class Question {
     public Type getType() {
         return type;
     }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

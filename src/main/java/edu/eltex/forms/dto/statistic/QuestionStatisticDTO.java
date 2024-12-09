@@ -12,4 +12,8 @@ public class QuestionStatisticDTO {
     public String getQuestionText() {
         return questionText;
     }
+
+    public Object getStatistic() {
+        return statistic;
+    }
 }

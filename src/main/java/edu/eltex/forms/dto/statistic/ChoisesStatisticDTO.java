@@ -37,4 +37,16 @@ public class ChoisesStatisticDTO {
                 .percentageOfAnswered(percentages)
                 .build();
     }
+
+    public List<Double> getPercentageOfAnswered() {
+        return percentageOfAnswered;
+    }
+
+    public List<Integer> getNumberOfAnswered() {
+        return numberOfAnswered;
+    }
+
+    public List<String> getAnswers() {
+        return answers;
+    }
 }

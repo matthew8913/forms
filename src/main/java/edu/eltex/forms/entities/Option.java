@@ -31,4 +31,12 @@ public class Option {
     public Question getQuestion() {
         return question;
     }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
 }

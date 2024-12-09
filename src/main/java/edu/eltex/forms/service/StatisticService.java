@@ -64,7 +64,7 @@ public class StatisticService {
                 .build();
     }
 
-    private QuestionStatisticDTO getTextQuestionStatistic(Question question, List<Answer> answers) {
+    public QuestionStatisticDTO getTextQuestionStatistic(Question question, List<Answer> answers) {
         List<String> textAnswers = answers.stream()
                 .map(Answer::getAnswerText)
                 .collect(Collectors.toList());
@@ -75,7 +75,7 @@ public class StatisticService {
                 .build();
     }
 
-    private QuestionStatisticDTO getNumericQuestionStatistic(Question question, List<Answer> answers) {
+    public QuestionStatisticDTO getNumericQuestionStatistic(Question question, List<Answer> answers) {
         List<Integer> numericAnswers = answers.stream()
                 .map(answer -> Integer.parseInt(answer.getAnswerText()))
                 .collect(Collectors.toList());
@@ -88,7 +88,7 @@ public class StatisticService {
                 .build();
     }
 
-    private QuestionStatisticDTO getChoicesQuestionStatistic(Question question, List<Answer> answers, List<Option> options, int numberOfCompletions) {
+    public QuestionStatisticDTO getChoicesQuestionStatistic(Question question, List<Answer> answers, List<Option> options, int numberOfCompletions) {
         List<String> answeredAnswers = answers.stream()
                 .flatMap(answer -> answer.getSelectedOptions().stream())
                 .map(Option::getText)
