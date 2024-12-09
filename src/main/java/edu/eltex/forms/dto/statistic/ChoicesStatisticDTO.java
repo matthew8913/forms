@@ -5,19 +5,18 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
 @Builder
-public class ChoisesStatisticDTO {
+public class ChoicesStatisticDTO {
     private List<String> answers;
     private List<Integer> numberOfAnswered;
     private List<Double> percentageOfAnswered;
 
-    public static ChoisesStatisticDTO getFullChoisesStatisticDTO(List<String> answeredAnswers, List<String> allPossibleAnswers, int numberOfCompletions) {
+    public static ChoicesStatisticDTO getFullChoisesStatisticDTO(List<String> answeredAnswers, List<String> allPossibleAnswers, int numberOfCompletions) {
         Map<String, Long> answerCounts = answeredAnswers.stream()
                 .collect(Collectors.groupingBy(answer -> answer, Collectors.counting()));
 
@@ -31,7 +30,7 @@ public class ChoisesStatisticDTO {
                         .doubleValue())
                 .collect(Collectors.toList());
 
-        return ChoisesStatisticDTO.builder()
+        return ChoicesStatisticDTO.builder()
                 .answers(allPossibleAnswers)
                 .numberOfAnswered(counts)
                 .percentageOfAnswered(percentages)

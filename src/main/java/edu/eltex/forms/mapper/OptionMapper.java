@@ -9,9 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface OptionMapper {
 
+    Option toEntity(OptionRequestDTO optionRequestDTO);
+
     @Mapping(source = "question.id", target = "questionId")
     OptionResponseDTO toDto(Option optionEntity);
-
-    @Mapping(source = "questionId", target = "question.id")
-    Option toEntity(OptionRequestDTO optionRequestDTO);
 }

@@ -4,12 +4,13 @@ import edu.eltex.forms.dto.RefreshTokenResponseDto;
 import edu.eltex.forms.entities.User;
 import edu.eltex.forms.exception.TokenRefreshException;
 import edu.eltex.forms.repository.UserRepository;
-import edu.eltex.forms.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class RefreshTokenService {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public String createRefreshToken(String username) {
         String refreshToken = UUID.randomUUID().toString();
         User user =

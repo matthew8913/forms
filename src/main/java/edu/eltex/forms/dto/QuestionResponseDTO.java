@@ -1,5 +1,6 @@
 package edu.eltex.forms.dto;
 
+import edu.eltex.forms.enums.QuestionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class QuestionResponseDTO {
     private Integer id;
     private Integer formId;
     private String text;
-    private String type;
+    private QuestionType type;
     private String imageUrl;
     private List<OptionResponseDTO> options;
 }

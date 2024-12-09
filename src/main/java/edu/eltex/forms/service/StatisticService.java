@@ -1,6 +1,6 @@
 package edu.eltex.forms.service;
 
-import edu.eltex.forms.dto.statistic.ChoisesStatisticDTO;
+import edu.eltex.forms.dto.statistic.ChoicesStatisticDTO;
 import edu.eltex.forms.dto.statistic.NumericStatisticDTO;
 import edu.eltex.forms.dto.statistic.QuestionStatisticDTO;
 import edu.eltex.forms.dto.statistic.StatisticDTO;
@@ -10,6 +10,8 @@ import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -45,7 +47,7 @@ public class StatisticService {
                     List<String> answeredAnswers = questionAnswersMap.getOrDefault(entry.getKey(), new ArrayList<>());
                     List<String> allPossibleAnswers = entry.getValue();
 
-                    ChoisesStatisticDTO choicesStatistic = ChoisesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
+                    ChoicesStatisticDTO choicesStatistic = ChoicesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
 
                     return QuestionStatisticDTO.builder()
                             .questionText(entry.getKey())
@@ -92,6 +94,7 @@ public class StatisticService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public StatisticDTO getFormStatistic(int formId) {
         Integer numberOfCompletions = statisticRepository.countNumberOfCompletions(formId);
 

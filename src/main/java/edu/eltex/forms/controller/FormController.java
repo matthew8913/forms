@@ -4,6 +4,7 @@ import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.service.FormService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/forms")
+@RequiredArgsConstructor
 public class FormController {
 
     private final FormService formService;
-
-    public FormController(FormService formService) {
-        this.formService = formService;
-    }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<FormResponseDTO> createForm(@Valid @RequestBody FormRequestDTO formRequestDTO) {
