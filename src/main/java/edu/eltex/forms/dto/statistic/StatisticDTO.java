@@ -18,4 +18,12 @@ public class StatisticDTO {
     public List<QuestionStatisticDTO> getQuestionStatistic() {
         return questionStatistic;
     }
+
+    public void setQuestionStatistic(List<QuestionStatisticDTO> questionStatistic) {
+        this.questionStatistic = questionStatistic;
+    }
+
+    public void setNumberOfCompletions(Integer numberOfCompletions) {
+        this.numberOfCompletions = numberOfCompletions;
+    }
 }
