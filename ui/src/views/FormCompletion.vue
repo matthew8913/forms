@@ -62,9 +62,9 @@ export default {
                 const answer = questionComponent.answer;
 
                 if (question.type === 'NUMERIC' || question.type === 'TEXT') {
-                    return !answer; 
+                    return !answer;
                 } else if (question.type === 'SINGLE_CHOICE') {
-                    return answer === null || answer === undefined; 
+                    return answer === null || answer === undefined;
                 } else if (question.type === 'MULTIPLE_CHOICE') {
                     return !Array.isArray(answer) || answer.length === 0;
                 }
@@ -128,12 +128,14 @@ export default {
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Ошибка при отправке ответов:', errorData);
-                    return;
+                    throw new Error(errorData.message)
                 }
 
                 const data = await response.json();
                 console.log('Ответы успешно отправлены:', data);
+
+                
+                this.router.push('/form-list');
             } catch (error) {
                 console.error('Ошибка при отправке ответов:', error);
             }
