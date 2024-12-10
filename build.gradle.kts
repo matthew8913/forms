@@ -1,5 +1,3 @@
-import kotlin.system.exitProcess
-
 plugins {
     java
     id("org.springframework.boot") version "3.4.0"
@@ -7,7 +5,7 @@ plugins {
 }
 
 group = "edu.eltex"
-version = "0.0.1-SNAPSHOT"
+version = "0.1"
 
 java {
     toolchain {
@@ -98,3 +96,4 @@ tasks.register("copyToResources") {
 }
 
 tasks.findByName("bootRun")?.dependsOn("buildUI")
+tasks.findByName("bootJar")?.dependsOn("buildUI")
