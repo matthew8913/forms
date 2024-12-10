@@ -1,6 +1,7 @@
 package edu.eltex.forms.dto;
 
 import edu.eltex.forms.entities.User;
+import edu.eltex.forms.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ public class AuthResponseDto {
 
     private String accessToken;
     private String refreshToken;
-    private User.Role role;
+    private UserRole role;
     private Long userId;
     private String username;
 }
