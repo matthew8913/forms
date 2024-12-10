@@ -32,8 +32,8 @@
                 onDelete="CASCADE"/>
     </changeSet>
 
-    <!--    <changeSet id="insert-answers_options-csv" author="alex">-->
-    <!--        <loadData tableName="answers_options" file="db/data/answers_options.csv"/>-->
-    <!--    </changeSet>-->
+        <changeSet id="insert-answers_options-csv" author="alex">
+            <loadData tableName="answers_options" file="db/data/answers_options.csv"/>
+        </changeSet>
 
 </databaseChangeLog>
