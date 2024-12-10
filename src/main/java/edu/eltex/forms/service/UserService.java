@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static edu.eltex.forms.enums.UserRole.USER;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -46,6 +48,7 @@ public class UserService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        userRequestDto.setRole(USER);
         User user = userMapper.toEntity(userRequestDto);
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new EntityExistsException("User with username: " + user.getUsername() + " already exists");

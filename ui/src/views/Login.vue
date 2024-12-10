@@ -41,7 +41,6 @@ export default {
     };
   },
   methods: {
-    // Метод обработки логина
     async handleLogin() {
       this.errorMessage = '';
       try {
@@ -58,8 +57,9 @@ export default {
           return;
         }
         const data = await response.json();
-        authService.setTokens(data.accessToken, data.refreshToken)
-        console.log(data.accessToken, data.refreshToken)
+        authService.setTokens(data.accessToken, data.refreshToken, data.role, data.userId, data.username);
+        console.log(authService.getTokens())
+        this.$router.push('/form-list');
       } catch (error) {
         this.errorMessage = error.message;
       }

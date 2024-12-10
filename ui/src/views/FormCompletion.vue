@@ -3,7 +3,8 @@
         <h1 v-if="form.title" class="text-center mb-4">{{ form.title }}</h1>
         <p v-if="form.description" class="text-center mb-4">{{ form.description }}</p>
         <div v-for="(question, index) in form.questions" :key="question.id" class="mb-3">
-            <QuestionComponent :question="question" :index="index" ref="questions" />
+            <QuestionComponent :question="question" :index="index" ref="questions"
+                @update:answer="updateAnswer(index, $event)" />
         </div>
         <div class="d-flex justify-content-center">
             <button @click="submitForm" class="btn btn-success">Завершить опрос</button>
@@ -14,6 +15,7 @@
 <script>
 import QuestionComponent from '../components/QuestionCompletion.vue';
 import { API_BASE_URL } from '../../config.js';
+import { authService } from '@/service/authService';
 
 export default {
     components: {
@@ -37,14 +39,13 @@ export default {
         await this.fetchForm(formId);
     },
     methods: {
-        //метод получения данных о форме
+        //метод получения формы
         async fetchForm(formId) {
             try {
-                const response = await fetch(`${API_BASE_URL}/forms/${formId}`);
+                const response = await authService.fetchWithToken(`${API_BASE_URL}/forms/${formId}`);
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Ошибка при загрузке опроса:', errorData);
-                    return;
+                    throw new Error(errorData.message)
                 }
                 const data = await response.json();
                 this.form = data;
@@ -52,14 +53,34 @@ export default {
                 console.error('Ошибка при загрузке опроса:', error);
             }
         },
-        
-        //метод сбора ответов при нажатии на кнопку "Завершить опрос"
+        updateAnswer(index, answer) {
+            this.$set(this.answers, index, answer);
+        },
         submitForm() {
+            const unansweredQuestions = this.$refs.questions.filter((questionComponent, index) => {
+                const question = questionComponent.$props.question;
+                const answer = questionComponent.answer;
+
+                if (question.type === 'NUMERIC' || question.type === 'TEXT') {
+                    return !answer; 
+                } else if (question.type === 'SINGLE_CHOICE') {
+                    return answer === null || answer === undefined; 
+                } else if (question.type === 'MULTIPLE_CHOICE') {
+                    return !Array.isArray(answer) || answer.length === 0;
+                }
+
+                return false; 
+            });
+
+            if (unansweredQuestions.length > 0) {
+                alert('Пожалуйста, ответьте на все вопросы перед завершением опроса.');
+                return;
+            }
+
             this.answers = this.$refs.questions.map((questionComponent) => {
                 const question = questionComponent.$props.question;
                 const answer = questionComponent.answer;
 
-                // Формируем объект ответа в зависимости от типа вопроса
                 if (question.type === 'NUMERIC' || question.type === 'TEXT') {
                     return {
                         questionId: question.id,
@@ -67,34 +88,37 @@ export default {
                         selectedOptions: null,
                     };
                 } else if (question.type === 'SINGLE_CHOICE') {
+                    const selectedOption = question.options.find(option => option.id === answer);
                     return {
                         questionId: question.id,
                         answerText: null,
-                        selectedOptions: answer ? [{ id: answer }] : [],
+                        selectedOptions: selectedOption ? [{ text: selectedOption.text }] : [],
                     };
                 } else if (question.type === 'MULTIPLE_CHOICE') {
+                    const selectedOptions = answer.map(optionId => {
+                        const option = question.options.find(opt => opt.id === optionId);
+                        return { text: option.text };
+                    });
                     return {
                         questionId: question.id,
                         answerText: null,
-                        selectedOptions: answer.map(optionId => ({ id: optionId })),
+                        selectedOptions: selectedOptions,
                     };
                 }
             });
 
             const completionRequest = {
                 answers: this.answers,
-                userId: 2, 
+                userId: authService.getUserId(),
                 formId: this.form.id,
             };
 
             console.log('Завершение опроса с ответами:', completionRequest);
             this.sendCompletionData(completionRequest);
-        }
-        ,
-        //метод отправки данных заполненной формы
+        },
         async sendCompletionData(completionRequest) {
             try {
-                const response = await fetch(`${API_BASE_URL}/completions`, {
+                const response = await authService.fetchWithToken(`${API_BASE_URL}/completions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

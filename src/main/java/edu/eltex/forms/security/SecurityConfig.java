@@ -27,7 +27,8 @@ public class SecurityConfig {
     private static final String[] PUBLIC_PATHS = {
             "/api/v1/auth/**",
             "/api/v1/forms/**",
-            "/api/v1/completions/**"
+            "/api/v1/completions/**",
+            "/api/v1/statistic/**",
     };
 
     private static final String[] SECURED_PATHS = {
