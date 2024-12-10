@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,24 +23,28 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<UserResponseDto> findAllUsers() {
         return userRepository.findAll().stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserResponseDto findUserById(Integer id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
         return userMapper.toDto(user);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserResponseDto findUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
         return userMapper.toDto(user);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         userRequestDto.setRole("USER");
         User user = userMapper.toEntity(userRequestDto);
@@ -50,7 +56,7 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
-
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto updateUser(Integer id, UserRequestDto userRequestDto) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);
@@ -61,6 +67,7 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);
@@ -68,6 +75,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void saveRefreshToken(String username, String refreshToken) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
         user.setRefreshToken(refreshToken);

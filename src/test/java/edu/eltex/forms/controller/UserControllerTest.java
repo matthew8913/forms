@@ -1,6 +1,10 @@
 package edu.eltex.forms.controller;
 
-import edu.eltex.forms.dto.*;
+import edu.eltex.forms.dto.AuthRequestDto;
+import edu.eltex.forms.dto.AuthResponseDto;
+import edu.eltex.forms.dto.UserRequestDto;
+import edu.eltex.forms.dto.UserResponseDto;
+import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,14 +43,14 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
-        userId = registerUser("user", "password", "USER");
+        userId = registerUser("user", "password", UserRole.USER);
         userAccessToken = loginUser("user", "password").getAccessToken();
 
-        registerUser("creator", "password", "CREATOR");
+        registerUser("creator", "password", UserRole.CREATOR);
         creatorAccessToken = loginUser("creator", "password").getAccessToken();
     }
 
-    private Integer registerUser(String username, String password, String role) {
+    private Integer registerUser(String username, String password, UserRole role) {
         UserRequestDto registrationRequest = UserRequestDto.builder()
                 .username(username)
                 .password(password)
@@ -132,7 +136,7 @@ class UserControllerTest {
         UserRequestDto userRequestDto = UserRequestDto.builder()
                 .username("newUser")
                 .password("password")
-                .role("USER")
+                .role(UserRole.USER)
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
@@ -152,7 +156,7 @@ class UserControllerTest {
         UserRequestDto userRequestDto = UserRequestDto.builder()
                 .username("updatedUser")
                 .password("newpassword")
-                .role("USER")
+                .role(UserRole.USER)
                 .build();
 
         HttpHeaders headers = new HttpHeaders();

@@ -11,16 +11,16 @@ import org.mapstruct.Mappings;
 public interface FormMapper {
 
     @Mappings({
+            @Mapping(ignore = true, target = "id"),
+            @Mapping(source = "creatorId", target = "creator.id"),
+            @Mapping(source = "questions", target = "questions")
+    })
+    Form toEntity(FormRequestDTO formRequestDTO);
+
+    @Mappings({
             @Mapping(source = "creator.id", target = "creatorId"),
             @Mapping(source = "creator.username", target = "creatorName"),
             @Mapping(source = "questions", target = "questions")
     })
     FormResponseDTO toDto(Form formEntity);
-
-    @Mappings({
-            @Mapping(source = "creatorId", target = "creator.id"),
-            @Mapping(source = "creatorName", target = "creator.username"),
-            @Mapping(source = "questions", target = "questions")
-    })
-    Form toEntity(FormRequestDTO formRequestDTO);
 }

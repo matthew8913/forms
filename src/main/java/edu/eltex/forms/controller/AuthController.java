@@ -3,6 +3,7 @@ package edu.eltex.forms.controller;
 import edu.eltex.forms.dto.*;
 import edu.eltex.forms.service.AuthService;
 import edu.eltex.forms.service.RefreshTokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
@@ -30,7 +32,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/refresh-token", consumes = "application/json")
-    public ResponseEntity<RefreshTokenResponseDto> refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+    public ResponseEntity<RefreshTokenResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
         RefreshTokenResponseDto refreshTokenResponseDto = refreshTokenService.refreshAccessToken(refreshTokenRequestDto.getRefreshToken());
         return ResponseEntity.ok(refreshTokenResponseDto);
     }
