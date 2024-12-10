@@ -28,5 +28,9 @@
     <changeSet id="insert-users-csv" author="alex">
         <loadData tableName="users" file="db/data/users.csv"/>
     </changeSet>
-
+    <changeSet id="update-sequence-after-insert" author="matthew">
+        <sql>
+            SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
+        </sql>
+    </changeSet>
 </databaseChangeLog>
