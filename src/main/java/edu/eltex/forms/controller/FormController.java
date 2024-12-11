@@ -1,13 +1,16 @@
 package edu.eltex.forms.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.service.FormService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,8 +21,25 @@ public class FormController {
 
     private final FormService formService;
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<FormResponseDTO> createForm(@Valid @RequestBody FormRequestDTO formRequestDTO) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FormResponseDTO> createForm(@RequestParam("formRequestDTO") String formRequestDTOString,
+                                                      @RequestParam(value = "images", required = false) List<MultipartFile> images) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        FormRequestDTO formRequestDTO;
+        try {
+            formRequestDTO = objectMapper.readValue(formRequestDTOString, FormRequestDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Invalid JSON format for formRequestDTO", e);
+        }
+
+        if (formRequestDTO.getQuestions() != null && !formRequestDTO.getQuestions().isEmpty()) {
+            for (int i = 0; i < formRequestDTO.getQuestions().size(); i++) {
+                if (i < images.size()) {
+                    formRequestDTO.getQuestions().get(i).setImage(images.get(i));
+                }
+            }
+        }
+
         FormResponseDTO formResponseDTO = formService.createForm(formRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(formResponseDTO);
     }
