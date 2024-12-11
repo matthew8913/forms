@@ -31,8 +31,4 @@ public class Completion {
     @Builder.Default
     @OneToMany(mappedBy = "completion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
 }

@@ -34,20 +34,4 @@ public class NumericStatisticDTO {
                 .avgAnswer(avgAnswer)
                 .build();
     }
-
-    public Integer getAvgAnswer() {
-        return avgAnswer;
-    }
-
-    public Integer getMaxAnswer() {
-        return maxAnswer;
-    }
-
-    public Integer getMinAnswer() {
-        return minAnswer;
-    }
-
-    public List<Integer> getAnswers() {
-        return answers;
-    }
 }

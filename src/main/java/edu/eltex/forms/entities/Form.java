@@ -32,12 +32,4 @@ public class Form {
     @Builder.Default
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public Integer getId() {
-        return id;
-    }
 }

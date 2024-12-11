@@ -23,20 +23,4 @@ public class Option {
 
     @Column(nullable = false)
     private String text;
-
-    public String getText() {
-        return text;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
 }

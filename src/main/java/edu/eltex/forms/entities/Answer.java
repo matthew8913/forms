@@ -37,28 +37,4 @@ public class Answer {
             inverseJoinColumns = @JoinColumn(name = "option_id", referencedColumnName = "id")
     )
     private List<Option> selectedOptions;
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public List<Option> getSelectedOptions() {
-        return selectedOptions;
-    }
-
-    public String getAnswerText() {
-        return answerText;
-    }
-
-    public void setSelectedOptions(List<Option> selectedOptions) {
-        this.selectedOptions = selectedOptions;
-    }
-
-    public void setAnswerText(String answerText) {
-        this.answerText = answerText;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
 }

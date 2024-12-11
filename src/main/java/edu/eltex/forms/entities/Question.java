@@ -43,28 +43,4 @@ public class Question {
         MULTIPLE_CHOICE,
         TEXT
     }
-
-    public String getText() {
-        return text;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }
