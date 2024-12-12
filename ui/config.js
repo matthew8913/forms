@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://localhost:8080/api/v1';
+export const API_BASE_URL = `http://${import.meta.env.VITE_APP_HOST}:${import.meta.env.VITE_APP_PORT}/api/v1`;
