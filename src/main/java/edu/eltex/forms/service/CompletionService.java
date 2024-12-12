@@ -3,6 +3,7 @@ package edu.eltex.forms.service;
 import edu.eltex.forms.dto.CompletionRequestDTO;
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.entities.Completion;
+import edu.eltex.forms.exception.FormAlreadyCompletedException;
 import edu.eltex.forms.mapper.CompletionMapper;
 import edu.eltex.forms.repository.CompletionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -39,6 +40,10 @@ public class CompletionService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public CompletionResponseDTO createCompletion(CompletionRequestDTO completionRequestDTO) {
+        if(getCompletionIdByUserAndForm(completionRequestDTO.getFormId(), completionRequestDTO.getUserId())!=-1){
+            throw new FormAlreadyCompletedException("Form with ID: "
+                    + completionRequestDTO.getFormId() +" already completed by user with ID: " + completionRequestDTO.getUserId());
+        }
         Completion completionEntity = completionMapper.toEntity(completionRequestDTO);
         // Save won't work without setting valid references and cascade
         // All child must have references to corresponding parents (not nulls or randomly generated)
@@ -65,5 +70,10 @@ public class CompletionService {
             return true;
         }
         return false;
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public Integer getCompletionIdByUserAndForm(Integer formId, Integer userId) {
+        return completionRepository.findCompletionIdByForm_IdAndUser_Id(formId, userId).orElse(-1);
     }
 }
