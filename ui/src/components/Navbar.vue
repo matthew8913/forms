@@ -13,7 +13,7 @@
             <router-link to="/form-list" class="nav-link active" aria-current="page">Список опросов</router-link>
           </li>
           <li class="nav-item" v-if="isAuthenticated">
-            <router-link to="/lk" class="nav-link">Моя страница</router-link>
+            <router-link to="/profile" class="nav-link">Моя страница</router-link>
           </li>
         </ul>
       </div>
