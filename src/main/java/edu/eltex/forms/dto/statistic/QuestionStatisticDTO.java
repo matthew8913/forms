@@ -8,8 +8,4 @@ import lombok.Data;
 public class QuestionStatisticDTO {
     private String questionText;
     private Object statistic;
-
-    public String getQuestionText() {
-        return questionText;
-    }
 }
