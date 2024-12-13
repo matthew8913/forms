@@ -9,8 +9,12 @@ import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +24,111 @@ import java.util.stream.Collectors;
 public class StatisticService {
 
     private final StatisticRepository statisticRepository;
+
+    public byte[] generateExcelStatistic(int formId) throws IOException {
+        StatisticDTO statisticDTO = getFormStatistic(formId);
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Statistic #" + formId);
+
+            Font font = workbook.createFont();
+            font.setFontName("Tahoma");
+            font.setFontHeightInPoints((short) 18);
+
+            Font boldFont = workbook.createFont();
+            boldFont.setFontName("Tahoma");
+            boldFont.setFontHeightInPoints((short) 18);
+            boldFont.setBold(true);
+
+            CellStyle answerStyle = workbook.createCellStyle();
+            answerStyle.setFont(font);
+            answerStyle.setAlignment(HorizontalAlignment.CENTER);
+            answerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            CellStyle questionStyle = workbook.createCellStyle();
+            questionStyle.setFont(boldFont);
+            questionStyle.setAlignment(HorizontalAlignment.CENTER);
+            questionStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            int rowNumber = 0;
+
+            for (QuestionStatisticDTO questionStatistic : statisticDTO.getQuestionStatistic()) {
+                Row questionRow = sheet.createRow(rowNumber++);
+                Cell questionCell = questionRow.createCell(0);
+                questionCell.setCellValue(questionStatistic.getQuestionText());
+                questionCell.setCellStyle(questionStyle);
+
+                Object statistic = questionStatistic.getStatistic();
+
+                if (statistic instanceof List) {
+                    List<String> textAnswers = (List<String>) statistic;
+                    Row answerRow = sheet.createRow(rowNumber++);
+                    for (int i = 0; i < textAnswers.size(); i++) {
+                        Cell cell = answerRow.createCell(i);
+                        cell.setCellValue(textAnswers.get(i));
+                        cell.setCellStyle(answerStyle);
+                    }
+                } else if (statistic instanceof NumericStatisticDTO) {
+                    NumericStatisticDTO numericStatistic = (NumericStatisticDTO) statistic;
+
+                    Row statsHeaderRow = sheet.createRow(rowNumber++);
+                    statsHeaderRow.createCell(0).setCellValue("Min");
+                    statsHeaderRow.createCell(1).setCellValue("Max");
+                    statsHeaderRow.createCell(2).setCellValue("Avg");
+                    for (int i = 0; i < 3; i++) {
+                        statsHeaderRow.getCell(i).setCellStyle(answerStyle);
+                    }
+
+                    Row statsValuesRow = sheet.createRow(rowNumber++);
+                    statsValuesRow.createCell(0).setCellValue(numericStatistic.getMinAnswer());
+                    statsValuesRow.createCell(1).setCellValue(numericStatistic.getMaxAnswer());
+                    statsValuesRow.createCell(2).setCellValue(numericStatistic.getAvgAnswer());
+                    for (int i = 0; i < 3; i++) {
+                        statsValuesRow.getCell(i).setCellStyle(answerStyle);
+                    }
+
+                    Row allAnswersRow = sheet.createRow(rowNumber++);
+                    for (int i = 0; i < numericStatistic.getAnswers().size(); i++) {
+                        Cell cell = allAnswersRow.createCell(i);
+                        cell.setCellValue(numericStatistic.getAnswers().get(i));
+                        cell.setCellStyle(answerStyle);
+                    }
+                } else if (statistic instanceof ChoicesStatisticDTO) {
+                    ChoicesStatisticDTO choicesStatistic = (ChoicesStatisticDTO) statistic;
+
+                    Row answersRow = sheet.createRow(rowNumber++);
+                    for (int i = 0; i < choicesStatistic.getAnswers().size(); i++) {
+                        Cell cell = answersRow.createCell(i);
+                        cell.setCellValue(choicesStatistic.getAnswers().get(i));
+                        cell.setCellStyle(answerStyle);
+                    }
+
+                    Row countsRow = sheet.createRow(rowNumber++);
+                    for (int i = 0; i < choicesStatistic.getNumberOfAnswered().size(); i++) {
+                        Cell cell = countsRow.createCell(i);
+                        cell.setCellValue(choicesStatistic.getNumberOfAnswered().get(i));
+                        cell.setCellStyle(answerStyle);
+                    }
+
+                    Row percentagesRow = sheet.createRow(rowNumber++);
+                    for (int i = 0; i < choicesStatistic.getPercentageOfAnswered().size(); i++) {
+                        Cell cell = percentagesRow.createCell(i);
+                        cell.setCellValue(choicesStatistic.getPercentageOfAnswered().get(i) + "%");
+                        cell.setCellStyle(answerStyle);
+                    }
+                }
+            }
+
+            for (int i = 0; i < sheet.getRow(0).getLastCellNum(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                workbook.write(baos);
+                return baos.toByteArray();
+            }
+        }
+    }
 
     public StatisticDTO getFormStatistic(int formId) {
         Integer numberOfCompletions = statisticRepository.countNumberOfCompletions(formId);
