@@ -15,7 +15,7 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/registration", component: Registration },
   { path: "/create-form", component: FormCreation },
-  { path: "/lk", component: UserProfilePage },
+  { path: "/profile", component: UserProfilePage },
   { path: "/complete-form/:formId", component: FormCompletion },
   { path: "/my-answers/:completionId", component: CompletedForm},
   { path: "/form-list", component: FormList },
@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
   const publicRoutes = ["/", "/login", "/registration"];
   const protectedRoutes = [
     "/create-form",
-    "/lk",
+    "/profile",
     "/complete-form/:formId",
     "/my-answers/:completionId",
     "/form-list",

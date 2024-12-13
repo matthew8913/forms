@@ -9,6 +9,8 @@
 *.nar
 hs_err_pid*
 replay_pid*
+src/main/resources/static/
+ui/dist/
 ##############################
 ## Maven
 ##############################
@@ -82,7 +84,7 @@ nb-configuration.xml
 ## Other
 ##############################
 *.txt
-
+.env
 # Logs
 logs
 npm-debug.log*

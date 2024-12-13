@@ -25,7 +25,7 @@ public class ChoicesStatisticDTO {
                 .collect(Collectors.toList());
 
         List<Double> percentages = counts.stream()
-                .map(count -> new BigDecimal((double) count / numberOfCompletions * 100)
+                .map(count -> BigDecimal.valueOf(numberOfCompletions == 0 ? 0 : (double) count / numberOfCompletions * 100)
                         .setScale(2, RoundingMode.HALF_UP)
                         .doubleValue())
                 .collect(Collectors.toList());

@@ -34,6 +34,6 @@ public class QuestionRequestDTO {
         if ((type.equals(QuestionType.SINGLE_CHOICE) || type.equals(QuestionType.MULTIPLE_CHOICE)) && options != null && !options.isEmpty()) {
             return true;
         } else
-            return !type.equals(QuestionType.SINGLE_CHOICE) && !type.equals(QuestionType.MULTIPLE_CHOICE) && options == null;
+            return !type.equals(QuestionType.SINGLE_CHOICE) && !type.equals(QuestionType.MULTIPLE_CHOICE) && (options == null || options.isEmpty());
     }
 }
