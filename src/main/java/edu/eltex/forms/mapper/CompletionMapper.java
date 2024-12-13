@@ -3,7 +3,6 @@ package edu.eltex.forms.mapper;
 import edu.eltex.forms.dto.CompletionRequestDTO;
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.entities.Completion;
-import edu.eltex.forms.model.CompletionModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -12,10 +11,12 @@ import org.mapstruct.Mappings;
 public interface CompletionMapper {
 
     @Mappings({
+            @Mapping(ignore = true, target = "id"),
             @Mapping(source = "userId", target = "user.id"),
             @Mapping(source = "formId", target = "form.id"),
+            @Mapping(source = "answers", target = "answers"),
     })
-    CompletionModel toModel(CompletionRequestDTO completionRequestDTO);
+    Completion toEntity(CompletionRequestDTO formModel);
 
     @Mappings({
             @Mapping(source = "user.id", target = "userId"),
@@ -23,11 +24,4 @@ public interface CompletionMapper {
             @Mapping(source = "answers", target = "answers"),
     })
     CompletionResponseDTO toDTO(Completion completionEntity);
-
-    @Mappings({
-            @Mapping(source = "userId", target = "user.id"),
-            @Mapping(source = "formId", target = "form.id"),
-            @Mapping(source = "answers", target = "answers"),
-    })
-    Completion toEntity(CompletionRequestDTO formModel);
 }

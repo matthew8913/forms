@@ -47,5 +47,9 @@
             <column name="role" value="USER"/>
         </insert>
     </changeSet>
-
+    <changeSet id="update-sequence-after-insert" author="matthew">
+        <sql>
+            SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
+        </sql>
+    </changeSet>
 </databaseChangeLog>

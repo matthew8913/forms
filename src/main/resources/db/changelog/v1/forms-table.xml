@@ -11,13 +11,21 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="creator_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_form_creator" references="users(id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="title" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="TEXT"/>
         </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="form"
+                baseColumnNames="creator_id"
+                constraintName="fk_form_creator"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
     </changeSet>
 
     <changeSet id="insert-form" author="matthew">

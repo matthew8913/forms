@@ -1,12 +1,13 @@
 package edu.eltex.forms.service;
 
-import edu.eltex.forms.dto.statistic.ChoisesStatisticDTO;
+import edu.eltex.forms.dto.statistic.ChoicesStatisticDTO;
 import edu.eltex.forms.dto.statistic.NumericStatisticDTO;
 import edu.eltex.forms.dto.statistic.QuestionStatisticDTO;
 import edu.eltex.forms.dto.statistic.StatisticDTO;
 import edu.eltex.forms.entities.Answer;
 import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.entities.Question;
+import edu.eltex.forms.enums.QuestionType;
 import edu.eltex.forms.repository.StatisticRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,22 +44,22 @@ public class StatisticServiceTest {
         Question question1 = new Question();
         question1.setId(1);
         question1.setText("Как тебя зовут?");
-        question1.setType(Question.Type.TEXT);
+        question1.setType(QuestionType.TEXT);
 
         Question question2 = new Question();
         question2.setId(2);
         question2.setText("Твой возраст?");
-        question2.setType(Question.Type.NUMERIC);
+        question2.setType(QuestionType.NUMERIC);
 
         Question question3 = new Question();
         question3.setId(3);
         question3.setText("Выбери любимые предметы");
-        question3.setType(Question.Type.MULTIPLE_CHOICE);
+        question3.setType(QuestionType.MULTIPLE_CHOICE);
 
         Question question4 = new Question();
         question4.setId(4);
         question4.setText("Выбери любимую команду");
-        question4.setType(Question.Type.SINGLE_CHOICE);
+        question4.setType(QuestionType.SINGLE_CHOICE);
 
         List<Question> questions = Arrays.asList(question1, question2, question3, question4);
 
@@ -145,8 +146,8 @@ public class StatisticServiceTest {
 
         QuestionStatisticDTO multipleChoiceQuestionStatistic = result.getQuestionStatistic().get(2);
         assertEquals("Выбери любимые предметы", multipleChoiceQuestionStatistic.getQuestionText());
-        assertTrue(multipleChoiceQuestionStatistic.getStatistic() instanceof ChoisesStatisticDTO);
-        ChoisesStatisticDTO multipleChoiceStatistic = (ChoisesStatisticDTO) multipleChoiceQuestionStatistic.getStatistic();
+        assertTrue(multipleChoiceQuestionStatistic.getStatistic() instanceof ChoicesStatisticDTO);
+        ChoicesStatisticDTO multipleChoiceStatistic = (ChoicesStatisticDTO) multipleChoiceQuestionStatistic.getStatistic();
         assertEquals(2, multipleChoiceStatistic.getAnswers().size());
         assertEquals(1, multipleChoiceStatistic.getNumberOfAnswered().get(0));
         assertEquals(2, multipleChoiceStatistic.getNumberOfAnswered().get(1));
@@ -155,8 +156,8 @@ public class StatisticServiceTest {
 
         QuestionStatisticDTO singleChoiceQuestionStatistic = result.getQuestionStatistic().get(3);
         assertEquals("Выбери любимую команду", singleChoiceQuestionStatistic.getQuestionText());
-        assertTrue(singleChoiceQuestionStatistic.getStatistic() instanceof ChoisesStatisticDTO);
-        ChoisesStatisticDTO singleChoiceStatistic = (ChoisesStatisticDTO) singleChoiceQuestionStatistic.getStatistic();
+        assertTrue(singleChoiceQuestionStatistic.getStatistic() instanceof ChoicesStatisticDTO);
+        ChoicesStatisticDTO singleChoiceStatistic = (ChoicesStatisticDTO) singleChoiceQuestionStatistic.getStatistic();
         assertEquals(2, singleChoiceStatistic.getAnswers().size());
         assertEquals(1, singleChoiceStatistic.getNumberOfAnswered().get(0));
         assertEquals(1, singleChoiceStatistic.getNumberOfAnswered().get(1));

@@ -1,6 +1,6 @@
 package edu.eltex.forms.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OptionRequestDTO {
 
-    private Integer id;
-
-    private Integer questionId;
-
-    @NotNull(message = "Text is mandatory")
+    @NotEmpty(message = "Text is mandatory")
     private String text;
 }

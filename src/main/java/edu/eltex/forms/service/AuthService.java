@@ -3,6 +3,9 @@ package edu.eltex.forms.service;
 import edu.eltex.forms.dto.AuthRequestDto;
 import edu.eltex.forms.dto.AuthResponseDto;
 import edu.eltex.forms.dto.UserRequestDto;
+import edu.eltex.forms.dto.UserResponseDto;
+import edu.eltex.forms.entities.User;
+import edu.eltex.forms.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,14 +31,19 @@ public class AuthService {
         final String jwt = jwtService.generateToken(userDetails);
         final String refreshToken = refreshTokenService.createRefreshToken(authRequest.getUsername());
         userService.saveRefreshToken(authRequest.getUsername(), refreshToken);
-        return new AuthResponseDto(jwt, refreshToken);
+        UserResponseDto user = userService.findUserByUsername(authRequest.getUsername());
+        UserRole role = user.getRole();
+        String username = user.getUsername();
+        Long id = Long.valueOf(user.getId());
+        return new AuthResponseDto(jwt, refreshToken, role, id,username);
     }
 
     public boolean isAuthenticatedUserWithId(Integer userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            return userDetails.getUsername().equals(userId.toString());
+            UserResponseDto userResponseDto = userService.findUserById(userId);
+            return userDetails.getUsername().equals(userResponseDto.getUsername());
         }
         return false;
     }

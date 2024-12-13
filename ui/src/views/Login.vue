@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { authService } from '@/service/authService.js';
 import { API_BASE_URL } from '../../config.js';
 
 export default {
@@ -40,7 +41,6 @@ export default {
     };
   },
   methods: {
-    // Метод обработки логина
     async handleLogin() {
       this.errorMessage = '';
       try {
@@ -57,7 +57,9 @@ export default {
           return;
         }
         const data = await response.json();
-        console.log(data);
+        authService.setTokens(data.accessToken, data.refreshToken, data.role, data.userId, data.username);
+        console.log(authService.getTokens())
+        this.$router.push('/form-list');
       } catch (error) {
         this.errorMessage = error.message;
       }

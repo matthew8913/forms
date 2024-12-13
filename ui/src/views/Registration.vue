@@ -10,11 +10,8 @@
             <form @submit.prevent="handleRegistration">
               <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" v-model="username" placeholder="ivanov123" required>
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" v-model="email" placeholder="ivanov@example.com" required>
+                <input type="text" class="form-control" id="username" v-model="username" placeholder="ivanov123"
+                  required>
               </div>
               <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
@@ -41,16 +38,17 @@ export default {
   name: 'Registration',
   data() {
     return {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      errorMessage: ''
+      username: '', // Имя пользователя
+      password: '', // Пароль
+      confirmPassword: '', // Подтверждение пароля
+      errorMessage: '' // Сообщение об ошибке
     };
   },
+
   methods: {
+    // Метод обработки регистрации
     async handleRegistration() {
-      this.errorMessage = ''; // Очищаем сообщение об ошибке перед каждым запросом
+      this.errorMessage = ''; // Очистка сообщения об ошибке
 
       // Проверка совпадения паролей
       if (this.password !== this.confirmPassword) {
@@ -59,22 +57,34 @@ export default {
       }
 
       try {
+        // Логирование запроса
+        console.log('Sending registration request:', {
+          username: this.username,
+          password: this.password
+        });
+
+        // Отправка запроса на регистрацию
         const response = await fetch(`${API_BASE_URL}/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ username: this.username, email: this.email, password: this.password })
+          body: JSON.stringify({ username: this.username, password: this.password })
         });
+
+        // Проверка статуса ответа
         if (!response.ok) {
           const errorData = await response.text();
           this.errorMessage = errorData;
           return;
         }
-        const data = await response.json();
-        console.log(data);
+
+        // Перенаправление на страницу входа после успешной регистрации
+        this.$router.push('/login');
+
       } catch (error) {
-        this.errorMessage = error.message || 'An error occurred';
+        // Обработка ошибок
+        this.errorMessage = error.message;
       }
     }
   }

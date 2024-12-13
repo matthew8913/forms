@@ -1,5 +1,9 @@
 package edu.eltex.forms.dto;
 
+import edu.eltex.forms.enums.QuestionType;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,17 +18,22 @@ import java.util.List;
 @Builder
 public class QuestionRequestDTO {
 
-    private Integer id;
-
-    private Integer formId;
-
-    @NotNull(message = "Text is mandatory")
+    @NotEmpty(message = "Text is mandatory")
     private String text;
 
-    @NotNull(message = "Type is mandatory")
-    private String type;
+    @NotNull(message = "Type is mandatory. Types: NUMERIC, SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT")
+    private QuestionType type;
 
     private String imageUrl;
 
+    @Valid
     private List<OptionRequestDTO> options;
+
+    @AssertTrue(message = "Must have no options for non-optional types. Must have at least 1 option for optional types.")
+    private boolean isValid() {
+        if ((type.equals(QuestionType.SINGLE_CHOICE) || type.equals(QuestionType.MULTIPLE_CHOICE)) && options != null && !options.isEmpty()) {
+            return true;
+        } else
+            return !type.equals(QuestionType.SINGLE_CHOICE) && !type.equals(QuestionType.MULTIPLE_CHOICE) && (options == null || options.isEmpty());
+    }
 }

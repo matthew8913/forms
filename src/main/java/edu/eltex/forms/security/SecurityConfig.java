@@ -20,7 +20,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final JwtRequestFilter jwtRequestFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    private static final String[] PUBLIC_PATHS = {
+            "/api/v1/auth/**",
+            "/api/v1/forms/**",
+            "/api/v1/completions/**",
+            "/api/v1/statistic/**",
+    };
+
+    private static final String[] SECURED_PATHS = {
+            "/api/v1/users/**",
+    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -28,18 +41,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        authorizeRequests ->
-                                authorizeRequests
-                                        .requestMatchers("/api/v1/auth/**","/api/v1/forms/**","/api/v1/completions/**", "/api/v1/statistic/**")
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
-                .sessionManagement(
-                        sessionManagement ->
-                                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    public SecurityFilterChain publicFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher(PUBLIC_PATHS)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll());
+        return http.build();
+    }
+
+    @Bean
+    public SecurityFilterChain securedFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher(SECURED_PATHS)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().authenticated())
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

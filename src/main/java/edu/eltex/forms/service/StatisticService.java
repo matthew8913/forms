@@ -1,6 +1,6 @@
 package edu.eltex.forms.service;
 
-import edu.eltex.forms.dto.statistic.ChoisesStatisticDTO;
+import edu.eltex.forms.dto.statistic.ChoicesStatisticDTO;
 import edu.eltex.forms.dto.statistic.NumericStatisticDTO;
 import edu.eltex.forms.dto.statistic.QuestionStatisticDTO;
 import edu.eltex.forms.dto.statistic.StatisticDTO;
@@ -98,7 +98,7 @@ public class StatisticService {
                 .map(Option::getText)
                 .collect(Collectors.toList());
 
-        ChoisesStatisticDTO choicesStatistic = ChoisesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
+        ChoicesStatisticDTO choicesStatistic = ChoicesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
 
         return QuestionStatisticDTO.builder()
                 .questionText(question.getText())
