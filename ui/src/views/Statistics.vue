@@ -94,23 +94,29 @@
                         </div>
 
 
-                        <div v-else-if="questionStat.questionType === 'RATING'" class="mt-3">
-                            <h5 class="text-success">Рейтинговая статистика</h5>
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Позиция</th>
-                                        <th>Опция</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(option, idx) in questionStat.statistic" :key="idx">
-                                        <td>{{ idx + 1 }}</td>
-                                        <td>{{ option }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                      <div v-else-if="questionStat.questionType === 'RATING'" class="mt-3">
+                        <h5 class="text-success">Рейтинговая статистика</h5>
+                        <table class="table table-bordered table-hover">
+                          <thead class="thead-light">
+                          <tr>
+                            <th>Позиция</th>
+                            <th>Вариант</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr v-for="(options, position) in questionStat.statistic" :key="position">
+                            <td>{{ position }}</td>
+                            <td>
+                              <ul class="list-unstyled">
+                                <li v-for="(option, optionIdx) in options" :key="optionIdx">
+                                  {{ option }}
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
 
 
                         <div v-else class="mt-3">

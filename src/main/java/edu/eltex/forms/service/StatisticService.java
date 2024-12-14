@@ -12,8 +12,7 @@ import edu.eltex.forms.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,18 +67,27 @@ public class StatisticService {
             }
         }
 
-        List<String> topOptions = optionScores.entrySet().stream()
-                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+        Map<Integer, List<String>> optionsByScore = optionScores.entrySet().stream()
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getValue,
+                        Collectors.mapping(Map.Entry::getKey, Collectors.toList())
+                ));
+
+        List<Integer> sortedScores = optionsByScore.keySet().stream()
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        Map<Integer, List<String>> orderedOptionsByScore = new LinkedHashMap<>();
+        for (int i = 0; i < sortedScores.size(); i++) {
+            orderedOptionsByScore.put(i + 1, optionsByScore.get(sortedScores.get(i)));
+        }
 
         return QuestionStatisticDTO.builder()
                 .questionType(QuestionType.RATING)
                 .questionText(question.getText())
-                .statistic(topOptions)
+                .statistic(orderedOptionsByScore)
                 .build();
     }
-
     public QuestionStatisticDTO getTextQuestionStatistic(Question question, List<Answer> answers) {
         List<String> textAnswers = answers.stream()
                 .map(Answer::getAnswerText)
