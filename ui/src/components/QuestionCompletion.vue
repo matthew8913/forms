@@ -55,6 +55,12 @@ export default {
       sortedOptions: [...this.question.options],
     };
   },
+  created() {
+    if (this.question.type === 'RATING') {
+      this.answer = this.sortedOptions.map(option => option.id);
+      this.$emit('update:answer', this.answer);
+    }
+  },
   methods: {
     moveOptionUp(index) {
       if (index > 0) {
