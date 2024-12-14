@@ -4,6 +4,9 @@ import edu.eltex.forms.dto.CompletionRequestDTO;
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.entities.Completion;
 import edu.eltex.forms.exception.FormAlreadyCompletedException;
+import edu.eltex.forms.entities.Option;
+import edu.eltex.forms.enums.QuestionType;
+import edu.eltex.forms.exception.IncompleteRatingAnswerException;
 import edu.eltex.forms.mapper.CompletionMapper;
 import edu.eltex.forms.repository.CompletionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -50,6 +55,14 @@ public class CompletionService {
         // Ignoring = NullPointerException or Hibernate Exception
         completionEntity.getAnswers().forEach(answer -> {
             answer.setCompletion(completionEntity);
+            if(answer.getQuestion().getType() == QuestionType.RATING) {
+                Set<String> optionsOfQuestion = answer.getQuestion().getOptions().stream().map(Option::getText).collect(Collectors.toSet());
+                answer.getSelectedOptions().forEach(option -> {
+                    if(!optionsOfQuestion.contains(option.getText())) {
+                        throw new IncompleteRatingAnswerException("Not all options are selected for the question: " + answer.getQuestion().getText());
+                    }
+                });
+            }
             if (answer.getSelectedOptions() != null) {
                 // Everything except options is new and needed to be saved, but options are not
                 // Replace options by already existing ones to stop creating new options on every answer

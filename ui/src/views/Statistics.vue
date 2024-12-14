@@ -15,8 +15,28 @@
                     <div class="card-body">
                         <h4 class="card-title">Вопрос {{ index + 1 }}: {{ questionStat.questionText }}</h4>
 
-                        <div v-if="questionStat.statistic.answers && questionStat.statistic.minAnswer !== undefined"
-                            class="mt-3">
+                        <div v-if="questionStat.questionType === 'TEXT'" class="mt-3">
+                            <h5 class="text-success">Текстовые ответы</h5>
+                            <div v-if="!showFullTextAnswers[index]" class="overflow-hidden" style="max-height: 100px;">
+                                <ul class="list-unstyled">
+                                    <li v-for="(answer, idx) in questionStat.statistic" :key="idx">
+                                        {{ answer }}
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="btn btn-link p-0" @click="toggleTextAnswers(index)">
+                                {{ showFullTextAnswers[index] ? 'Скрыть' : 'Показать все' }}
+                            </button>
+                            <div v-if="showFullTextAnswers[index]" class="mt-2">
+                                <ul class="list-unstyled">
+                                    <li v-for="(answer, idx) in questionStat.statistic" :key="idx">
+                                        {{ answer }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div v-else-if="questionStat.questionType === 'NUMERIC'" class="mt-3">
                             <h5 class="text-success">Числовая статистика</h5>
                             <div class="row">
                                 <div class="col-md-6">
@@ -26,7 +46,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p><strong>Ответы:</strong></p>
-                                    <div class="overflow-hidden" style="max-height: 50px;">
+                                    <div v-if="!showFullAnswers[index]" class="overflow-hidden" style="max-height: 50px;">
                                         <span>{{ formattedAnswers(questionStat.statistic.answers) }}</span>
                                     </div>
                                     <button class="btn btn-link p-0" @click="toggleAnswers(index)">
@@ -43,7 +63,8 @@
                             </div>
                         </div>
 
-                        <div v-else-if="questionStat.statistic.percentageOfAnswered" class="mt-3">
+                        <div v-else-if="questionStat.questionType === 'SINGLE_CHOICE' || questionStat.questionType === 'MULTIPLE_CHOICE'"
+                            class="mt-3">
                             <h5 class="text-success">Статистика выбранных вариантов</h5>
                             <table class="table table-bordered table-hover">
                                 <thead class="thead-light">
@@ -72,6 +93,32 @@
                             </table>
                         </div>
 
+
+                      <div v-else-if="questionStat.questionType === 'RATING'" class="mt-3">
+                        <h5 class="text-success">Рейтинговая статистика</h5>
+                        <table class="table table-bordered table-hover">
+                          <thead class="thead-light">
+                          <tr>
+                            <th>Позиция</th>
+                            <th>Вариант</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr v-for="(options, position) in questionStat.statistic" :key="position">
+                            <td>{{ position }}</td>
+                            <td>
+                              <ul class="list-unstyled">
+                                <li v-for="(option, optionIdx) in options" :key="optionIdx">
+                                  {{ option }}
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+
                         <div v-else class="mt-3">
                             <p class="text-muted">Нет данных для этого вопроса.</p>
                         </div>
@@ -80,9 +127,11 @@
             </div>
         </div>
 
-        <!-- Загрузка -->
         <div v-else class="text-center">
             <p>Загрузка статистики...</p>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <button @click="goBack" class="btn btn-secondary">Назад</button>
         </div>
     </div>
 </template>
@@ -95,7 +144,8 @@ export default {
     data() {
         return {
             statistic: null,
-            showFullAnswers: {},
+            showFullAnswers: {}, 
+            showFullTextAnswers: {}, 
         };
     },
     async created() {
@@ -112,7 +162,7 @@ export default {
                     return;
                 }
                 const data = await response.json();
-                console.log(data)
+                console.log(data);
 
                 this.statistic = data;
             } catch (error) {
@@ -127,8 +177,14 @@ export default {
             return sortedAnswers.join(', ');
         },
         toggleAnswers(index) {
-            this.$set(this.showFullAnswers, index, !this.showFullAnswers[index]);
+            this.showFullAnswers[index] = !this.showFullAnswers[index];
         },
+        toggleTextAnswers(index) {
+            this.showFullTextAnswers[index] = !this.showFullTextAnswers[index];
+        },
+        goBack() {
+            this.$router.push('/form-list');
+        }
     },
 };
 </script>

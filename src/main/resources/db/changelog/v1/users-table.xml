@@ -27,24 +27,9 @@
 
     <changeSet id="insert-users" author="matthew">
         <insert tableName="users">
-            <column name="username" value="creator1"/>
-            <column name="password" value="password1"/>
+            <column name="username" value="creator"/>
+            <column name="password" value="$2a$10$8FDoQpFDLu6zIHYlL1J3deaMXdC73XaGXVC1ULBq9MkX2GXii8R3u"/>
             <column name="role" value="CREATOR"/>
-        </insert>
-        <insert tableName="users">
-            <column name="username" value="user1"/>
-            <column name="password" value="password2"/>
-            <column name="role" value="USER"/>
-        </insert>
-        <insert tableName="users">
-            <column name="username" value="glad_valakas"/>
-            <column name="password" value="password3"/>
-            <column name="role" value="USER"/>
-        </insert>
-        <insert tableName="users">
-            <column name="username" value="user3"/>
-            <column name="password" value="password4"/>
-            <column name="role" value="USER"/>
         </insert>
     </changeSet>
     <changeSet id="update-sequence-after-insert" author="matthew">

@@ -1,5 +1,6 @@
 package edu.eltex.forms.dto.statistic;
 
+import edu.eltex.forms.enums.QuestionType;
 import lombok.Builder;
 import lombok.Data;
 

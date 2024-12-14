@@ -24,6 +24,16 @@
                 </ul>
               </p>
             </div>
+            <div v-else-if="question.type === 'RATING'">
+              <p class="card-text">
+                Составленный рейтинг:
+                <ul>
+                  <li v-for="option in getSelectedOptions(question.id)" :key="option.id">
+                    {{ option.text }}
+                  </li>
+                </ul>
+              </p>
+            </div>
           </div>
         </div>
       </div>

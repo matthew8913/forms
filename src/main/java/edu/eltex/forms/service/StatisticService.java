@@ -7,12 +7,12 @@ import edu.eltex.forms.dto.statistic.StatisticDTO;
 import edu.eltex.forms.entities.Answer;
 import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.entities.Question;
+import edu.eltex.forms.enums.QuestionType;
 import edu.eltex.forms.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,22 +39,13 @@ public class StatisticService {
                     List<Answer> questionAnswers = answersByQuestionId.getOrDefault(question.getId(), List.of());
                     List<Option> questionOptions = optionsByQuestionId.getOrDefault(question.getId(), List.of());
 
-                    QuestionStatisticDTO questionStatisticDTO = null;
-
-                    switch (question.getType()) {
-                        case TEXT:
-                            questionStatisticDTO = getTextQuestionStatistic(question, questionAnswers);
-                            break;
-                        case NUMERIC:
-                            questionStatisticDTO = getNumericQuestionStatistic(question, questionAnswers);
-                            break;
-                        case SINGLE_CHOICE:
-                        case MULTIPLE_CHOICE:
-                            questionStatisticDTO = getChoicesQuestionStatistic(question, questionAnswers, questionOptions, numberOfCompletions);
-                            break;
-                    }
-
-                    return questionStatisticDTO;
+                    return switch (question.getType()) {
+                        case TEXT -> getTextQuestionStatistic(question, questionAnswers);
+                        case NUMERIC -> getNumericQuestionStatistic(question, questionAnswers);
+                        case SINGLE_CHOICE, MULTIPLE_CHOICE ->
+                                getChoicesQuestionStatistic(question, questionAnswers, questionOptions, numberOfCompletions);
+                        case RATING -> getRatingStatistic(question, questionAnswers, questionOptions);
+                    };
                 })
                 .collect(Collectors.toList());
 
@@ -64,12 +55,46 @@ public class StatisticService {
                 .build();
     }
 
+    private QuestionStatisticDTO getRatingStatistic(Question question, List<Answer> questionAnswers, List<Option> questionOptions) {
+        Map<String, Integer> optionScores = questionOptions.stream()
+                .collect(Collectors.toMap(Option::getText, option -> 0));
+
+        for (Answer answer : questionAnswers) {
+            List<Option> selectedOptions = answer.getSelectedOptions();
+            for (int i = 0; i < selectedOptions.size(); i++) {
+                Option option = selectedOptions.get(i);
+                optionScores.put(option.getText(), optionScores.get(option.getText()) + (selectedOptions.size() - i));
+            }
+        }
+
+        Map<Integer, List<String>> optionsByScore = optionScores.entrySet().stream()
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getValue,
+                        Collectors.mapping(Map.Entry::getKey, Collectors.toList())
+                ));
+
+        List<Integer> sortedScores = optionsByScore.keySet().stream()
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        Map<Integer, List<String>> orderedOptionsByScore = new LinkedHashMap<>();
+        for (int i = 0; i < sortedScores.size(); i++) {
+            orderedOptionsByScore.put(i + 1, optionsByScore.get(sortedScores.get(i)));
+        }
+
+        return QuestionStatisticDTO.builder()
+                .questionType(QuestionType.RATING)
+                .questionText(question.getText())
+                .statistic(orderedOptionsByScore)
+                .build();
+    }
     public QuestionStatisticDTO getTextQuestionStatistic(Question question, List<Answer> answers) {
         List<String> textAnswers = answers.stream()
                 .map(Answer::getAnswerText)
                 .collect(Collectors.toList());
 
         return QuestionStatisticDTO.builder()
+                .questionType(QuestionType.TEXT)
                 .questionText(question.getText())
                 .statistic(textAnswers)
                 .build();
@@ -83,6 +108,7 @@ public class StatisticService {
         NumericStatisticDTO numericStatistic = NumericStatisticDTO.getFullNumericStatistic(numericAnswers);
 
         return QuestionStatisticDTO.builder()
+                .questionType(QuestionType.NUMERIC)
                 .questionText(question.getText())
                 .statistic(numericStatistic)
                 .build();
@@ -101,6 +127,7 @@ public class StatisticService {
         ChoicesStatisticDTO choicesStatistic = ChoicesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
 
         return QuestionStatisticDTO.builder()
+                .questionType(question.getType() == QuestionType.SINGLE_CHOICE ? QuestionType.SINGLE_CHOICE : QuestionType.MULTIPLE_CHOICE) // Добавляем тип вопроса
                 .questionText(question.getText())
                 .statistic(choicesStatistic)
                 .build();
