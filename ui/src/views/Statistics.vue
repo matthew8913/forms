@@ -17,13 +17,24 @@
 
                         <div v-if="questionStat.questionType === 'TEXT'" class="mt-3">
                             <h5 class="text-success">Текстовые ответы</h5>
-                            <ul class="list-unstyled">
-                                <li v-for="(answer, idx) in questionStat.statistic" :key="idx">
-                                    {{ answer }}
-                                </li>
-                            </ul>
+                            <div v-if="!showFullTextAnswers[index]" class="overflow-hidden" style="max-height: 100px;">
+                                <ul class="list-unstyled">
+                                    <li v-for="(answer, idx) in questionStat.statistic" :key="idx">
+                                        {{ answer }}
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="btn btn-link p-0" @click="toggleTextAnswers(index)">
+                                {{ showFullTextAnswers[index] ? 'Скрыть' : 'Показать все' }}
+                            </button>
+                            <div v-if="showFullTextAnswers[index]" class="mt-2">
+                                <ul class="list-unstyled">
+                                    <li v-for="(answer, idx) in questionStat.statistic" :key="idx">
+                                        {{ answer }}
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-
 
                         <div v-else-if="questionStat.questionType === 'NUMERIC'" class="mt-3">
                             <h5 class="text-success">Числовая статистика</h5>
@@ -35,7 +46,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p><strong>Ответы:</strong></p>
-                                    <div class="overflow-hidden" style="max-height: 50px;">
+                                    <div v-if="!showFullAnswers[index]" class="overflow-hidden" style="max-height: 50px;">
                                         <span>{{ formattedAnswers(questionStat.statistic.answers) }}</span>
                                     </div>
                                     <button class="btn btn-link p-0" @click="toggleAnswers(index)">
@@ -52,7 +63,8 @@
                             </div>
                         </div>
 
-                        <div v-else-if="questionStat.statistic.percentageOfAnswered" class="mt-3">
+                        <div v-else-if="questionStat.questionType === 'SINGLE_CHOICE' || questionStat.questionType === 'MULTIPLE_CHOICE'"
+                            class="mt-3">
                             <h5 class="text-success">Статистика выбранных вариантов</h5>
                             <table class="table table-bordered table-hover">
                                 <thead class="thead-light">
@@ -112,6 +124,9 @@
         <div v-else class="text-center">
             <p>Загрузка статистики...</p>
         </div>
+        <div class="d-flex justify-content-center mt-4">
+            <button @click="goBack" class="btn btn-secondary">Назад</button>
+        </div>
     </div>
 </template>
 
@@ -123,7 +138,8 @@ export default {
     data() {
         return {
             statistic: null,
-            showFullAnswers: {},
+            showFullAnswers: {}, 
+            showFullTextAnswers: {}, 
         };
     },
     async created() {
@@ -155,8 +171,14 @@ export default {
             return sortedAnswers.join(', ');
         },
         toggleAnswers(index) {
-            this.$set(this.showFullAnswers, index, !this.showFullAnswers[index]);
+            this.showFullAnswers[index] = !this.showFullAnswers[index];
         },
+        toggleTextAnswers(index) {
+            this.showFullTextAnswers[index] = !this.showFullTextAnswers[index];
+        },
+        goBack() {
+            this.$router.push('/form-list');
+        }
     },
 };
 </script>
