@@ -40,4 +40,16 @@ public class CompletionController {
         boolean deleted = completionService.deleteCompletion(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Completion with given ID not found");
     }
+
+    @GetMapping(value = "/user-form-completion")
+    public ResponseEntity<Integer> getCompletionIdByUserAndForm(
+            @RequestParam Integer formId,
+            @RequestParam Integer userId) {
+        Integer completionId = completionService.getCompletionIdByUserAndForm(formId, userId);
+        return completionId != -1
+                ? ResponseEntity.ok(completionId)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+
 }

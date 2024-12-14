@@ -51,4 +51,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIncompleteRatingAnswerException(TokenRefreshException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(FormAlreadyCompletedException.class)
+    public ResponseEntity<String> handleFormAlreadyCompletedException(FormAlreadyCompletedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
 }

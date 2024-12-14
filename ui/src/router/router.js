@@ -8,6 +8,7 @@ import { authService } from "../service/authService";
 import FormList from "@/views/FormList.vue";
 import Statistics from "@/views/Statistics.vue";
 import UserProfilePage from "@/views/UserProfilePage.vue";
+import CompletedForm from "@/views/CompletedForm.vue";
 
 const routes = [
   { path: "/", component: WelcomePage },
@@ -16,6 +17,7 @@ const routes = [
   { path: "/create-form", component: FormCreation },
   { path: "/profile", component: UserProfilePage },
   { path: "/complete-form/:formId", component: FormCompletion },
+  { path: "/my-answers/:completionId", component: CompletedForm},
   { path: "/form-list", component: FormList },
   { path: "/statistics/:formId", component: Statistics },
 ];
@@ -31,6 +33,7 @@ router.beforeEach((to, from, next) => {
     "/create-form",
     "/profile",
     "/complete-form/:formId",
+    "/my-answers/:completionId",
     "/form-list",
     "/statistics/:formId",
   ];
