@@ -135,7 +135,7 @@ export default {
                 console.log('Ответы успешно отправлены:', data);
 
                 
-                this.router.push('/form-list');
+                this.$router.push('/form-list');
             } catch (error) {
                 console.error('Ошибка при отправке ответов:', error);
             }
