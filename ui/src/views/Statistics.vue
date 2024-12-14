@@ -15,8 +15,17 @@
                     <div class="card-body">
                         <h4 class="card-title">Вопрос {{ index + 1 }}: {{ questionStat.questionText }}</h4>
 
-                        <div v-if="questionStat.statistic.answers && questionStat.statistic.minAnswer !== undefined"
-                            class="mt-3">
+                        <div v-if="questionStat.questionType === 'TEXT'" class="mt-3">
+                            <h5 class="text-success">Текстовые ответы</h5>
+                            <ul class="list-unstyled">
+                                <li v-for="(answer, idx) in questionStat.statistic" :key="idx">
+                                    {{ answer }}
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <div v-else-if="questionStat.questionType === 'NUMERIC'" class="mt-3">
                             <h5 class="text-success">Числовая статистика</h5>
                             <div class="row">
                                 <div class="col-md-6">
@@ -72,6 +81,26 @@
                             </table>
                         </div>
 
+
+                        <div v-else-if="questionStat.questionType === 'RATING'" class="mt-3">
+                            <h5 class="text-success">Рейтинговая статистика</h5>
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Позиция</th>
+                                        <th>Опция</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(option, idx) in questionStat.statistic" :key="idx">
+                                        <td>{{ idx + 1 }}</td>
+                                        <td>{{ option }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
                         <div v-else class="mt-3">
                             <p class="text-muted">Нет данных для этого вопроса.</p>
                         </div>
@@ -80,7 +109,6 @@
             </div>
         </div>
 
-        <!-- Загрузка -->
         <div v-else class="text-center">
             <p>Загрузка статистики...</p>
         </div>
@@ -112,7 +140,7 @@ export default {
                     return;
                 }
                 const data = await response.json();
-                console.log(data)
+                console.log(data);
 
                 this.statistic = data;
             } catch (error) {

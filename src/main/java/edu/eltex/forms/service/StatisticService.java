@@ -86,6 +86,7 @@ public class StatisticService {
                 .collect(Collectors.toList());
 
         return QuestionStatisticDTO.builder()
+                .questionType(QuestionType.TEXT)
                 .questionText(question.getText())
                 .statistic(textAnswers)
                 .build();
