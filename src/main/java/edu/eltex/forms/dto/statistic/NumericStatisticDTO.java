@@ -1,5 +1,6 @@
 package edu.eltex.forms.dto.statistic;
 
+import edu.eltex.forms.enums.QuestionType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.util.List;
 @Data
 @Builder
 public class NumericStatisticDTO {
+    private QuestionType questionType;
     private List<Integer> answers;
     private Integer minAnswer;
     private Integer maxAnswer;

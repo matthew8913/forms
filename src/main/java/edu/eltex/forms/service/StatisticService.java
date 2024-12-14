@@ -7,6 +7,7 @@ import edu.eltex.forms.dto.statistic.StatisticDTO;
 import edu.eltex.forms.entities.Answer;
 import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.entities.Question;
+import edu.eltex.forms.enums.QuestionType;
 import edu.eltex.forms.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,28 +40,43 @@ public class StatisticService {
                     List<Answer> questionAnswers = answersByQuestionId.getOrDefault(question.getId(), List.of());
                     List<Option> questionOptions = optionsByQuestionId.getOrDefault(question.getId(), List.of());
 
-                    QuestionStatisticDTO questionStatisticDTO = null;
-
-                    switch (question.getType()) {
-                        case TEXT:
-                            questionStatisticDTO = getTextQuestionStatistic(question, questionAnswers);
-                            break;
-                        case NUMERIC:
-                            questionStatisticDTO = getNumericQuestionStatistic(question, questionAnswers);
-                            break;
-                        case SINGLE_CHOICE:
-                        case MULTIPLE_CHOICE:
-                            questionStatisticDTO = getChoicesQuestionStatistic(question, questionAnswers, questionOptions, numberOfCompletions);
-                            break;
-                    }
-
-                    return questionStatisticDTO;
+                    return switch (question.getType()) {
+                        case TEXT -> getTextQuestionStatistic(question, questionAnswers);
+                        case NUMERIC -> getNumericQuestionStatistic(question, questionAnswers);
+                        case SINGLE_CHOICE, MULTIPLE_CHOICE ->
+                                getChoicesQuestionStatistic(question, questionAnswers, questionOptions, numberOfCompletions);
+                        case RATING -> getRatingStatistic(question, questionAnswers, questionOptions);
+                    };
                 })
                 .collect(Collectors.toList());
 
         return StatisticDTO.builder()
                 .numberOfCompletions(numberOfCompletions)
                 .questionStatistic(allQuestionStatistics)
+                .build();
+    }
+
+    private QuestionStatisticDTO getRatingStatistic(Question question, List<Answer> questionAnswers, List<Option> questionOptions) {
+        Map<String, Integer> optionScores = questionOptions.stream()
+                .collect(Collectors.toMap(Option::getText, option -> 0));
+
+        for (Answer answer : questionAnswers) {
+            List<Option> selectedOptions = answer.getSelectedOptions();
+            for (int i = 0; i < selectedOptions.size(); i++) {
+                Option option = selectedOptions.get(i);
+                optionScores.put(option.getText(), optionScores.get(option.getText()) + (selectedOptions.size() - i));
+            }
+        }
+
+        List<String> topOptions = optionScores.entrySet().stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        return QuestionStatisticDTO.builder()
+                .questionType(QuestionType.RATING)
+                .questionText(question.getText())
+                .statistic(topOptions)
                 .build();
     }
 
@@ -83,6 +99,7 @@ public class StatisticService {
         NumericStatisticDTO numericStatistic = NumericStatisticDTO.getFullNumericStatistic(numericAnswers);
 
         return QuestionStatisticDTO.builder()
+                .questionType(QuestionType.NUMERIC)
                 .questionText(question.getText())
                 .statistic(numericStatistic)
                 .build();
@@ -101,6 +118,7 @@ public class StatisticService {
         ChoicesStatisticDTO choicesStatistic = ChoicesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
 
         return QuestionStatisticDTO.builder()
+                .questionType(question.getType() == QuestionType.SINGLE_CHOICE ? QuestionType.SINGLE_CHOICE : QuestionType.MULTIPLE_CHOICE) // Добавляем тип вопроса
                 .questionText(question.getText())
                 .statistic(choicesStatistic)
                 .build();

@@ -1,5 +1,6 @@
 package edu.eltex.forms.dto.statistic;
 
+import edu.eltex.forms.enums.QuestionType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 @Data
 @Builder
 public class ChoicesStatisticDTO {
+    private QuestionType questionType;
     private List<String> answers;
     private List<Integer> numberOfAnswered;
     private List<Double> percentageOfAnswered;
