@@ -1,9 +1,6 @@
 package edu.eltex.forms.service;
 
-import edu.eltex.forms.dto.statistic.ChoicesStatisticDTO;
-import edu.eltex.forms.dto.statistic.NumericStatisticDTO;
-import edu.eltex.forms.dto.statistic.QuestionStatisticDTO;
-import edu.eltex.forms.dto.statistic.StatisticDTO;
+import edu.eltex.forms.dto.statistic.*;
 import edu.eltex.forms.entities.Answer;
 import edu.eltex.forms.entities.Option;
 import edu.eltex.forms.entities.Question;
@@ -180,38 +177,15 @@ public class StatisticService {
     }
 
     private QuestionStatisticDTO getRatingStatistic(Question question, List<Answer> questionAnswers, List<Option> questionOptions) {
-        Map<String, Integer> optionScores = questionOptions.stream()
-                .collect(Collectors.toMap(Option::getText, option -> 0));
-
-        for (Answer answer : questionAnswers) {
-            List<Option> selectedOptions = answer.getSelectedOptions();
-            for (int i = 0; i < selectedOptions.size(); i++) {
-                Option option = selectedOptions.get(i);
-                optionScores.put(option.getText(), optionScores.get(option.getText()) + (selectedOptions.size() - i));
-            }
-        }
-
-        Map<Integer, List<String>> optionsByScore = optionScores.entrySet().stream()
-                .collect(Collectors.groupingBy(
-                        Map.Entry::getValue,
-                        Collectors.mapping(Map.Entry::getKey, Collectors.toList())
-                ));
-
-        List<Integer> sortedScores = optionsByScore.keySet().stream()
-                .sorted(Comparator.reverseOrder())
-                .toList();
-
-        Map<Integer, List<String>> orderedOptionsByScore = new LinkedHashMap<>();
-        for (int i = 0; i < sortedScores.size(); i++) {
-            orderedOptionsByScore.put(i + 1, optionsByScore.get(sortedScores.get(i)));
-        }
+        List<RatingStatisticDTO> ratingStatistics = RatingStatisticDTO.getFullRatingStatistic(questionOptions, questionAnswers);
 
         return QuestionStatisticDTO.builder()
                 .questionType(QuestionType.RATING)
                 .questionText(question.getText())
-                .statistic(orderedOptionsByScore)
+                .statistic(ratingStatistics)
                 .build();
     }
+
     public QuestionStatisticDTO getTextQuestionStatistic(Question question, List<Answer> answers) {
         List<String> textAnswers = answers.stream()
                 .map(Answer::getAnswerText)
@@ -251,7 +225,7 @@ public class StatisticService {
         ChoicesStatisticDTO choicesStatistic = ChoicesStatisticDTO.getFullChoisesStatisticDTO(answeredAnswers, allPossibleAnswers, numberOfCompletions);
 
         return QuestionStatisticDTO.builder()
-                .questionType(question.getType() == QuestionType.SINGLE_CHOICE ? QuestionType.SINGLE_CHOICE : QuestionType.MULTIPLE_CHOICE) // Добавляем тип вопроса
+                .questionType(question.getType() == QuestionType.SINGLE_CHOICE ? QuestionType.SINGLE_CHOICE : QuestionType.MULTIPLE_CHOICE)
                 .questionText(question.getText())
                 .statistic(choicesStatistic)
                 .build();
