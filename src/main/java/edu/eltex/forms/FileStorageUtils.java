@@ -6,4 +6,3 @@ public class FileStorageUtils {
         return System.getProperty("user.dir") + "/uploads/images";
     }
 }
-
