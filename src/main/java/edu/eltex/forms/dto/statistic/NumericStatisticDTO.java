@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @Builder
 public class NumericStatisticDTO {
-    private QuestionType questionType;
     private List<Integer> answers;
     private Integer minAnswer;
     private Integer maxAnswer;

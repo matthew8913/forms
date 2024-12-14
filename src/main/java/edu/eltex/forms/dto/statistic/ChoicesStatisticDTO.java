@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @Data
 @Builder
 public class ChoicesStatisticDTO {
-    private QuestionType questionType;
     private List<String> answers;
     private List<Integer> numberOfAnswered;
     private List<Double> percentageOfAnswered;
