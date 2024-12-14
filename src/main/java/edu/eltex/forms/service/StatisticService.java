@@ -52,7 +52,14 @@ public class StatisticService {
 
             int rowNumber = 0;
 
+            Row numberOfCompletionsTitleRow = sheet.createRow(rowNumber++);
+            Cell numberOfCompletionTitleCell = numberOfCompletionsTitleRow.createCell(0);
+            numberOfCompletionTitleCell.setCellValue("Количество прошедших опрос: " + statisticDTO.getNumberOfCompletions());
+            numberOfCompletionTitleCell.setCellStyle(questionStyle);
+
             for (QuestionStatisticDTO questionStatistic : statisticDTO.getQuestionStatistic()) {
+                rowNumber++;
+
                 Row questionRow = sheet.createRow(rowNumber++);
                 Cell questionCell = questionRow.createCell(0);
                 questionCell.setCellValue(questionStatistic.getQuestionText());
@@ -63,8 +70,11 @@ public class StatisticService {
                 if (statistic instanceof List) {
                     List<String> textAnswers = (List<String>) statistic;
                     Row answerRow = sheet.createRow(rowNumber++);
+                    Cell titleCell = answerRow.createCell(0);
+                    titleCell.setCellValue("All answers:");
+                    titleCell.setCellStyle(answerStyle);
                     for (int i = 0; i < textAnswers.size(); i++) {
-                        Cell cell = answerRow.createCell(i);
+                        Cell cell = answerRow.createCell(i + 1);
                         cell.setCellValue(textAnswers.get(i));
                         cell.setCellStyle(answerStyle);
                     }
@@ -88,8 +98,11 @@ public class StatisticService {
                     }
 
                     Row allAnswersRow = sheet.createRow(rowNumber++);
+                    Cell titleCell = allAnswersRow.createCell(0);
+                    titleCell.setCellValue("All answers:");
+                    titleCell.setCellStyle(answerStyle);
                     for (int i = 0; i < numericStatistic.getAnswers().size(); i++) {
-                        Cell cell = allAnswersRow.createCell(i);
+                        Cell cell = allAnswersRow.createCell(i + 1);
                         cell.setCellValue(numericStatistic.getAnswers().get(i));
                         cell.setCellStyle(answerStyle);
                     }
