@@ -5,20 +5,16 @@ import edu.eltex.forms.entities.Option;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Data
 @Builder
 public class RatingStatisticDTO {
-    private int position;
-    private String answerText;
-    private double avgPosition;
+    private List<Integer> position;
+    private List<String> answerText;
+    private List<Double> avgPosition;
 
-    public static List<RatingStatisticDTO> getFullRatingStatistic(List<Option> questionOptions, List<Answer> questionAnswers) {
+    public static RatingStatisticDTO getFullRatingStatistic(List<Option> questionOptions, List<Answer> questionAnswers) {
         Map<String, Integer> optionPositionSum = new HashMap<>();
 
         for (Option option : questionOptions) {
@@ -33,21 +29,27 @@ public class RatingStatisticDTO {
             }
         }
 
-        List<RatingStatisticDTO> ratingStatistics = questionOptions.stream()
+        List<Integer> positions = new ArrayList<>();
+        List<String> answerTexts = new ArrayList<>();
+        List<Double> avgPositions = new ArrayList<>();
+
+        questionOptions.stream()
                 .map(option -> {
                     int sumPositions = optionPositionSum.get(option.getText());
-                    return RatingStatisticDTO.builder()
-                            .answerText(option.getText())
-                            .avgPosition(sumPositions == 0 ? 0 : sumPositions / (double) questionAnswers.size())
-                            .build();
+                    double avgPos = sumPositions == 0 ? 0 : sumPositions / (double) questionAnswers.size();
+                    return new AbstractMap.SimpleEntry<>(option.getText(), avgPos);
                 })
-                .sorted(Comparator.comparingDouble(RatingStatisticDTO::getAvgPosition))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparingDouble(Map.Entry::getValue))
+                .forEachOrdered(entry -> {
+                    positions.add(positions.size() + 1);
+                    answerTexts.add(entry.getKey());
+                    avgPositions.add(entry.getValue());
+                });
 
-        for (int i = 0; i < ratingStatistics.size(); i++) {
-            ratingStatistics.get(i).setPosition(i + 1);
-        }
-
-        return ratingStatistics;
+        return RatingStatisticDTO.builder()
+                .position(positions)
+                .answerText(answerTexts)
+                .avgPosition(avgPositions)
+                .build();
     }
 }

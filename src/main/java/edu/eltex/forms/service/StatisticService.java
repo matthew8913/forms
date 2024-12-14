@@ -128,6 +128,36 @@ public class StatisticService {
                         cell.setCellValue(choicesStatistic.getPercentageOfAnswered().get(i) + "%");
                         cell.setCellStyle(answerStyle);
                     }
+                } else if (statistic instanceof RatingStatisticDTO) {
+                    RatingStatisticDTO ratingStatistic = (RatingStatisticDTO) statistic;
+
+                    Row titleRow = sheet.createRow(rowNumber++);
+                    Cell positionCell = titleRow.createCell(0);
+                    positionCell.setCellStyle(answerStyle);
+                    positionCell.setCellValue("№");
+
+                    Cell answerCell = titleRow.createCell(1);
+                    answerCell.setCellStyle(answerStyle);
+                    answerCell.setCellValue("Ответ");
+
+                    Cell avgPositionCell = titleRow.createCell(2);
+                    avgPositionCell.setCellStyle(answerStyle);
+                    avgPositionCell.setCellValue("Средняя позиция");
+
+                    for (int i = 0; i < ratingStatistic.getPosition().size(); i++) {
+                        Row answerRow = sheet.createRow(rowNumber++);
+                        Cell posCell = answerRow.createCell(0);
+                        posCell.setCellValue(ratingStatistic.getPosition().get(i));
+                        posCell.setCellStyle(answerStyle);
+
+                        Cell textCell = answerRow.createCell(1);
+                        textCell.setCellValue(ratingStatistic.getAnswerText().get(i));
+                        textCell.setCellStyle(answerStyle);
+
+                        Cell avgCell = answerRow.createCell(2);
+                        avgCell.setCellValue(ratingStatistic.getAvgPosition().get(i));
+                        avgCell.setCellStyle(answerStyle);
+                    }
                 }
             }
 
@@ -177,12 +207,12 @@ public class StatisticService {
     }
 
     private QuestionStatisticDTO getRatingStatistic(Question question, List<Answer> questionAnswers, List<Option> questionOptions) {
-        List<RatingStatisticDTO> ratingStatistics = RatingStatisticDTO.getFullRatingStatistic(questionOptions, questionAnswers);
+        RatingStatisticDTO ratingStatistic = RatingStatisticDTO.getFullRatingStatistic(questionOptions, questionAnswers);
 
         return QuestionStatisticDTO.builder()
                 .questionType(QuestionType.RATING)
                 .questionText(question.getText())
-                .statistic(ratingStatistics)
+                .statistic(ratingStatistic)
                 .build();
     }
 
