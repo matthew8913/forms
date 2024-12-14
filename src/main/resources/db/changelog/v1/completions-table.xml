@@ -35,25 +35,4 @@
                 onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="insert-completion-1" author="alexey">
-        <insert tableName="completions">
-            <column name="user_id" value="2"/>
-            <column name="form_id" value="1"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="insert-completion-2" author="alexey">
-        <insert tableName="completions">
-            <column name="user_id" value="3"/>
-            <column name="form_id" value="1"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="insert-completion-3" author="alexey">
-        <insert tableName="completions">
-            <column name="user_id" value="4"/>
-            <column name="form_id" value="1"/>
-        </insert>
-    </changeSet>
-
 </databaseChangeLog>
