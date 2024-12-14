@@ -36,5 +36,7 @@ public class Answer {
             joinColumns = @JoinColumn(name = "answer_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "option_id", referencedColumnName = "id")
     )
+
+    @OrderColumn(name = "position")
     private List<Option> selectedOptions;
 }

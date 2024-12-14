@@ -54,92 +54,104 @@ export default {
             }
         },
         updateAnswer(index, answer) {
-            this.$set(this.answers, index, answer);
+          this.answers[index] = answer;
         },
         submitForm() {
             const unansweredQuestions = this.$refs.questions.filter((questionComponent, index) => {
-                const question = questionComponent.$props.question;
-                const answer = questionComponent.answer;
+             const question = questionComponent.$props.question;
+          const answer = questionComponent.answer;
 
-                if (question.type === 'NUMERIC' || question.type === 'TEXT') {
-                    return !answer;
-                } else if (question.type === 'SINGLE_CHOICE') {
-                    return answer === null || answer === undefined;
-                } else if (question.type === 'MULTIPLE_CHOICE') {
-                    return !Array.isArray(answer) || answer.length === 0;
-                }
+          if (question.type === 'NUMERIC' || question.type === 'TEXT') {
+            return !answer;
+          } else if (question.type === 'SINGLE_CHOICE') {
+            return answer === null || answer === undefined;
+          } else if (question.type === 'MULTIPLE_CHOICE') {
+            return !Array.isArray(answer) || answer.length === 0;
+          } else if (question.type === 'RATING') {
+            return !Array.isArray(answer) || answer.length !== question.options.length;
+          }
 
-                return false; 
-            });
+          return false;
+        });
 
-            if (unansweredQuestions.length > 0) {
-                alert('Пожалуйста, ответьте на все вопросы перед завершением опроса.');
-                return;
-            }
+        if (unansweredQuestions.length > 0) {
+          alert('Пожалуйста, ответьте на все вопросы перед завершением опроса.');
+          return;
+        }
 
-            this.answers = this.$refs.questions.map((questionComponent) => {
-                const question = questionComponent.$props.question;
-                const answer = questionComponent.answer;
+        this.answers = this.$refs.questions.map((questionComponent) => {
+          const question = questionComponent.$props.question;
+          const answer = questionComponent.answer;
 
-                if (question.type === 'NUMERIC' || question.type === 'TEXT') {
-                    return {
-                        questionId: question.id,
-                        answerText: answer,
-                        selectedOptions: null,
-                    };
-                } else if (question.type === 'SINGLE_CHOICE') {
-                    const selectedOption = question.options.find(option => option.id === answer);
-                    return {
-                        questionId: question.id,
-                        answerText: null,
-                        selectedOptions: selectedOption ? [{ text: selectedOption.text }] : [],
-                    };
-                } else if (question.type === 'MULTIPLE_CHOICE') {
-                    const selectedOptions = answer.map(optionId => {
-                        const option = question.options.find(opt => opt.id === optionId);
-                        return { text: option.text };
-                    });
-                    return {
-                        questionId: question.id,
-                        answerText: null,
-                        selectedOptions: selectedOptions,
-                    };
-                }
-            });
-
-            const completionRequest = {
-                answers: this.answers,
-                userId: authService.getUserId(),
-                formId: this.form.id,
+          if (question.type === 'NUMERIC' || question.type === 'TEXT') {
+            return {
+              questionId: question.id,
+              answerText: answer,
+              selectedOptions: null,
             };
+          } else if (question.type === 'SINGLE_CHOICE') {
+            const selectedOption = question.options.find(option => option.id === answer);
+            return {
+              questionId: question.id,
+              answerText: null,
+              selectedOptions: selectedOption ? [{text: selectedOption.text}] : [],
+            };
+          } else if (question.type === 'MULTIPLE_CHOICE') {
+            const selectedOptions = answer.map(optionId => {
+              const option = question.options.find(opt => opt.id === optionId);
+              return {text: option.text};
+            });
+            return {
+              questionId: question.id,
+              answerText: null,
+              selectedOptions: selectedOptions,
+            };
+          } else if (question.type === 'RATING') {
+            const selectedOptions = answer.map(optionId => {
+              const option = question.options.find(opt => opt.id === optionId);
+              return {text: option.text};
+            });
+            return {
+              questionId: question.id,
+              answerText: null,
+              selectedOptions: selectedOptions,
+            };
+          }
+        });
 
-            console.log('Завершение опроса с ответами:', completionRequest);
-            this.sendCompletionData(completionRequest);
-        },
-        async sendCompletionData(completionRequest) {
-            try {
-                const response = await authService.fetchWithToken(`${API_BASE_URL}/completions`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(completionRequest),
-                });
+        const completionRequest = {
+          answers: this.answers,
+          userId: authService.getUserId(),
+          formId: this.form.id,
+        };
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message)
-                }
+        console.log('Завершение опроса с ответами:', completionRequest);
+        this.sendCompletionData(completionRequest);
+      },
+      async sendCompletionData(completionRequest) {
+        try {
+          console.log(completionRequest)
+          const response = await authService.fetchWithToken(`${API_BASE_URL}/completions`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(completionRequest),
+          });
 
-                const data = await response.json();
-                console.log('Ответы успешно отправлены:', data);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message)
+          }
 
-                
-                this.router.push('/form-list');
-            } catch (error) {
-                console.error('Ошибка при отправке ответов:', error);
-            }
-        },
+          const data = await response.json();
+          console.log('Ответы успешно отправлены:', data);
+
+          this.$router.push('/form-list');
+        } catch (error) {
+          console.error('Ошибка при отправке ответов:', error);
+        }
+      },
     },
-};
-</script>
+  };
+  </script>

@@ -7,7 +7,8 @@
         </div>
         <div class="mb-3">
             <label for="formDescription" class="form-label">Описание опроса:</label>
-            <textarea v-model="description" id="formDescription" class="form-control" placeholder="Введите описание опроса"></textarea>
+            <textarea v-model="description" id="formDescription" class="form-control"
+                placeholder="Введите описание опроса"></textarea>
         </div>
         <div v-for="(question, index) in questions" :key="index" class="mb-3">
             <QuestionComponent :question="question" @updateQuestion="updateQuestion(index, $event)"
@@ -22,12 +23,16 @@
             <button @click="createform" class="btn btn-success">Создать опрос</button>
         </div>
     </div>
+    <div class="d-flex justify-content-center mt-4">
+        <button @click="goBack" class="btn btn-secondary">Назад</button>
+    </div>
 </template>
 
 <script>
 import QuestionComponent from '../components/QuestionCreation.vue';
 import { API_BASE_URL } from '../../config.js';
 import { authService } from '@/service/authService';
+import router from '@/router/router';
 
 export default {
     components: {
@@ -35,11 +40,11 @@ export default {
     },
     data() {
         return {
-            questions: [], 
+            questions: [],
             creatorId: authService.getUserId(),
-            creatorName: authService.getUsername(), 
-            title: '', 
-            description: '', 
+            creatorName: authService.getUsername(),
+            title: '',
+            description: '',
         };
     },
     methods: {
@@ -92,13 +97,18 @@ export default {
                     throw new Error(errorData.message)
                 }
 
-                // Получение данных о созданном опросе
+
                 const data = await response.json();
                 console.log('Опрос успешно создан:', data);
+                this.$router.push('/form-list')
             } catch (error) {
                 console.error('Ошибка при создании опроса:', error);
             }
         },
+        goBack() {
+            this.$router.push('/form-list');
+        },
+
     },
 };
 </script>
