@@ -82,7 +82,7 @@ nb-configuration.xml
 ## Other
 ##############################
 *.txt
-
+uploads/
 # Logs
 logs
 npm-debug.log*

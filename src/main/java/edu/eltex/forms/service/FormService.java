@@ -1,8 +1,10 @@
 package edu.eltex.forms.service;
 
+import edu.eltex.forms.FileStorageUtils;
 import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.entities.Form;
+import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.mapper.FormMapper;
 import edu.eltex.forms.repository.FormRepository;
 import jakarta.persistence.EntityExistsException;
@@ -12,6 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -74,9 +80,30 @@ public class FormService {
     public boolean deleteForm(Integer id) {
         Optional<Form> formEntity = formRepository.findById(id);
         if (formEntity.isPresent()) {
+            deleteImages(formEntity.get());
             formRepository.delete(formEntity.get());
             return true;
         }
         return false;
+    }
+
+    private void deleteImages(Form formEntity) {
+        if (formEntity.getQuestions() == null) {
+            return;
+        }
+
+        for (Question question : formEntity.getQuestions()) {
+            String imageUrl = question.getImageUrl();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                String basePath = FileStorageUtils.getUploadDir();
+                Path filePath = Paths.get(basePath, imageUrl.replace("/images/", ""));
+
+                try {
+                    Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete file " + filePath, e);
+                }
+            }
+        }
     }
 }

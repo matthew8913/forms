@@ -1,5 +1,6 @@
 package edu.eltex.forms.mapper;
 
+import edu.eltex.forms.FileStorageUtils;
 import edu.eltex.forms.dto.QuestionRequestDTO;
 import edu.eltex.forms.dto.QuestionResponseDTO;
 import edu.eltex.forms.entities.Question;
@@ -34,13 +35,15 @@ public interface QuestionMapper {
         MultipartFile image = questionRequestDTO.getImage();
         if (image != null && !image.isEmpty()) {
             try {
-                boolean isWin = System.getProperty("os.name").toLowerCase().contains("win");
-                String basePath = (isWin) ? "C:\\uploads\\images" : "/uploads/images";
+                String basePath = FileStorageUtils.getUploadDir();
 
                 String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
                 Path filePath = Paths.get(basePath, fileName);
+
                 Files.createDirectories(filePath.getParent());
+
                 image.transferTo(filePath.toFile());
+
                 question.setImageUrl("/images/" + fileName);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save file", e);
