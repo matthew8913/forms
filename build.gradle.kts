@@ -48,6 +48,8 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
 }
 
 tasks.withType<Test> {

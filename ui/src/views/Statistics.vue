@@ -95,27 +95,23 @@
 
 
                       <div v-else-if="questionStat.questionType === 'RATING'" class="mt-3">
-                        <h5 class="text-success">Рейтинговая статистика</h5>
-                        <table class="table table-bordered table-hover">
-                          <thead class="thead-light">
-                          <tr>
-                            <th>Позиция</th>
-                            <th>Вариант</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr v-for="(options, position) in questionStat.statistic" :key="position">
-                            <td>{{ position }}</td>
-                            <td>
-                              <ul class="list-unstyled">
-                                <li v-for="(option, optionIdx) in options" :key="optionIdx">
-                                  {{ option }}
-                                </li>
-                              </ul>
-                            </td>
-                          </tr>
-                          </tbody>
-                        </table>
+                          <h5 class="text-success">Рейтинговая статистика</h5>
+                          <table class="table table-bordered table-hover">
+                              <thead class="thead-light">
+                                  <tr>
+                                      <th>Позиция</th>
+                                      <th>Вариант</th>
+                                      <th>Средняя позиция</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr v-for="(position, idx) in questionStat.statistic.position" :key="idx">
+                                      <td>{{ position }}</td>
+                                      <td>{{ questionStat.statistic.answerText[idx] }}</td>
+                                      <td>{{ questionStat.statistic.avgPosition[idx].toFixed(3) }}</td>
+                                  </tr>
+                              </tbody>
+                          </table>
                       </div>
 
 
@@ -124,6 +120,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-12 text-center mt-4">
+                <button class="btn btn-primary" @click="downloadStatistic">Скачать статистику</button>
             </div>
         </div>
 
@@ -144,8 +143,8 @@ export default {
     data() {
         return {
             statistic: null,
-            showFullAnswers: {}, 
-            showFullTextAnswers: {}, 
+            showFullAnswers: {},
+            showFullTextAnswers: {},
         };
     },
     async created() {
@@ -162,8 +161,6 @@ export default {
                     return;
                 }
                 const data = await response.json();
-                console.log(data);
-
                 this.statistic = data;
             } catch (error) {
                 console.error('Ошибка при загрузке статистики:', error);
@@ -184,7 +181,31 @@ export default {
         },
         goBack() {
             this.$router.push('/form-list');
-        }
+        },
+        async downloadStatistic() {
+            try {
+                const formId = this.$route.params.formId;
+                const response = await authService.fetchWithToken(`${API_BASE_URL}/statistic/download/${formId}`, {
+                    responseType: 'blob',
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Ошибка при скачивании статистики:', errorData);
+                    return;
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'statistic.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Ошибка при скачивании статистики:', error);
+            }
+        },
     },
 };
 </script>
