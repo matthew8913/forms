@@ -2,6 +2,9 @@
   <div class="card mb-3">
     <div class="card-body">
       <h5 class="card-title">{{ index + 1 }}. {{ question.text }}</h5>
+      <div v-if="question.imageUrl" class="mb-2">
+        <img :src="ROOT_URL() + question.imageUrl" alt="Question Image" style="max-width: 100%;" />
+      </div>
       <!-- Числовой тип вопроса -->
       <div v-if="question.type === 'NUMERIC'">
         <input type="number" class="form-control" v-model.number="answer" placeholder="Введите число" />
@@ -42,8 +45,9 @@
     </div>
   </div>
 </template>
-
 <script>
+import {ROOT_URL} from "../../config.js";
+
 export default {
   props: {
     question: Object,
@@ -56,12 +60,16 @@ export default {
     };
   },
   created() {
+    console.log(this.question.imageUrl)
     if (this.question.type === 'RATING') {
       this.answer = this.sortedOptions.map(option => option.id);
       this.$emit('update:answer', this.answer);
     }
   },
   methods: {
+    ROOT_URL() {
+      return ROOT_URL
+    },
     moveOptionUp(index) {
       if (index > 0) {
         const option = this.sortedOptions.splice(index, 1)[0];

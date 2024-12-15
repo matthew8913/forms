@@ -12,7 +12,7 @@
         </div>
         <div v-for="(question, index) in questions" :key="index" class="mb-3">
             <QuestionComponent :question="question" @updateQuestion="updateQuestion(index, $event)"
-                @removeQuestion="removeQuestion(index)" />
+                @removeQuestion="removeQuestion(index)" @updateImage="updateImage(index, $event)" />
         </div>
         <div class="d-flex justify-content-center">
             <button @click="addQuestion" class="btn btn-light btn-lg mb-3 w-100" style="opacity: 0.7;">
@@ -32,7 +32,6 @@
 import QuestionComponent from '../components/QuestionCreation.vue';
 import { API_BASE_URL } from '../../config.js';
 import { authService } from '@/service/authService';
-import router from '@/router/router';
 
 export default {
     components: {
@@ -45,10 +44,10 @@ export default {
             creatorName: authService.getUsername(),
             title: '',
             description: '',
+            images: [],
         };
     },
     methods: {
-        // Метод для добавления нового вопроса в опрос
         addQuestion() {
             this.questions.push({
                 id: null,
@@ -58,19 +57,25 @@ export default {
                 imageUrl: null,
                 options: [],
             });
+            this.images.push(null);
         },
-
-        // Метод для обновления вопроса по индексу
         updateQuestion(index, updatedQuestion) {
             this.questions[index] = updatedQuestion;
         },
-
-        // Метод для удаления вопроса по индексу
         removeQuestion(index) {
             this.questions.splice(index, 1);
+            this.images.splice(index, 1);
         },
 
-        // Метод для создания опроса
+        updateImage(questionIndex, file) {
+            console.log('Index in updateImage: ' + questionIndex)
+            console.log('File in updateImage: ' + file)
+            if (questionIndex !== -1) {
+                this.images[questionIndex] = file;
+                console.log(`Файл сохранён для вопроса с ID ${questionIndex}:`, file);
+            }
+        },
+
         async createform() {
             const form = {
                 id: null,
@@ -81,26 +86,40 @@ export default {
                 questions: this.questions,
             };
 
+            const formData = new FormData();
+            formData.append(
+                'formRequestDTO',
+                new Blob([JSON.stringify(form)], { type: 'application/json' })
+            );
+
+            const imageIndexes = [];
+            this.images.forEach((image, index) => {
+                if (image) {
+                    formData.append('images', image);
+                    imageIndexes.push(index);
+                }
+            });
+
+            formData.append('imageIndexes', JSON.stringify(imageIndexes));
+
+            console.log('JSON:', formData.get('formRequestDTO'));
+            console.log('Images:', formData.getAll('images'));
+            console.log('Image Indexes:', formData.get('imageIndexes'));
+
             try {
-                // Отправка запроса на создание опроса с использованием токена
                 const response = await authService.fetchWithToken(`${API_BASE_URL}/forms`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(form),
+                    body: formData,
                 });
 
-                // Проверка статуса ответа
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message)
+                    throw new Error(errorData.message);
                 }
-
 
                 const data = await response.json();
                 console.log('Опрос успешно создан:', data);
-                this.$router.push('/form-list')
+                this.$router.push('/form-list');
             } catch (error) {
                 console.error('Ошибка при создании опроса:', error);
             }
@@ -108,7 +127,6 @@ export default {
         goBack() {
             this.$router.push('/form-list');
         },
-
     },
 };
 </script>

@@ -20,6 +20,14 @@
           </div>
           <button @click="addOption" class="btn btn-success btn-sm">+ Добавить вариант</button>
         </div>
+        <div class="mt-2">
+          <label for="questionImage" class="form-label">Изображение вопроса:</label>
+          <input type="file" @change="onFileChange" id="questionImage" class="form-control" />
+          <button v-if="question.imageUrl" @click="removeImage" class="btn btn-danger btn-sm mt-2">Удалить изображение</button>
+        </div>
+        <div v-if="question.imageUrl" class="mt-2">
+          <img :src="question.imageUrl" alt="Question Image" style="max-width: 100%;" />
+        </div>
       </div>
     </div>
     <button @click="removeQuestion" class="btn btn-danger btn-sm position-absolute top-0 end-0 h-100" style="width: 30px; opacity: 0.7;">
@@ -47,6 +55,21 @@ export default {
     removeQuestion() {
       this.$emit('removeQuestion');
     },
+    onFileChange(event) {
+      const file = event.target.files[0];
+      console.log('Выбран файл в компоненте вопроса:', file);
+      if (file) {
+        const questionIndex = this.$parent.questions.indexOf(this.question);
+        this.$parent.images[questionIndex] = file;
+        this.question.imageUrl = URL.createObjectURL(file);
+      }
+    },
+    removeImage() {
+      const questionIndex = this.$parent.questions.indexOf(this.question);
+      this.$parent.images[questionIndex] = null;
+      this.question.imageUrl = null;
+      this.$refs.questionImage.value = '';
+    }
   },
   watch: {
     question: {

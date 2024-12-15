@@ -6,6 +6,7 @@ import edu.eltex.forms.dto.QuestionResponseDTO;
 import edu.eltex.forms.entities.Question;
 import edu.eltex.forms.exception.InvalidFileTypeException;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.Tika;
 import org.mapstruct.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,7 +59,12 @@ public interface QuestionMapper {
     }
 
     private boolean isValidImageMimeType(MultipartFile file) {
-        String mimeType = file.getContentType();
-        return mimeType.matches("image/(jpeg|png|gif)");
+        try {
+            Tika tika = new Tika();
+            String mimeType = tika.detect(file.getInputStream());
+            return mimeType.matches("image/(jpeg|jpg|png|gif)");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to detect file type", e);
+        }
     }
 }
