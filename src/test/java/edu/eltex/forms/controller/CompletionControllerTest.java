@@ -13,6 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,6 +48,7 @@ class CompletionControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"CREATOR"})
     void getAllCompletions() throws Exception {
         final String uri = "/api/v1/completions";
         final List<CompletionResponseDTO> resp = List.of(
@@ -59,6 +63,7 @@ class CompletionControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"CREATOR"})
     void getCompletionOkIndex() throws Exception {
         final String uri = "/api/v1/completions/1";
         final CompletionResponseDTO resp = CompletionResponseDTO.builder().id(1).userId(10).formId(100).answers(List.of(
@@ -79,6 +84,7 @@ class CompletionControllerTest {
     }
 
     @Test
+    @WithMockUser
     void createCompletionValid() throws Exception {
         final String uri = "/api/v1/completions";
         final CompletionRequestDTO req = CompletionRequestDTO.builder().userId(10).formId(100).answers(List.of(
@@ -108,6 +114,7 @@ class CompletionControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"CREATOR"})
     void deleteCompletionOkIndex() throws Exception {
         final String uri = "/api/v1/completions/1";
         when(service.deleteCompletion(Mockito.anyInt())).thenReturn(true);
@@ -116,6 +123,7 @@ class CompletionControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"CREATOR"})
     void deleteCompletionBadIndex() throws Exception {
         final String uri = "/api/v1/completions/1";
         when(service.deleteCompletion(Mockito.anyInt())).thenReturn(false);

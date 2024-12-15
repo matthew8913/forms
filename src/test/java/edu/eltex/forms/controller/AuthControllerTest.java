@@ -15,6 +15,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -26,9 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthControllerTest {
 
     @Container
-    public static GenericContainer<?> h2Container = new GenericContainer<>("buildo/h2database")
-            .withExposedPorts(9092);
-
+    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.3")
+            .withDatabaseName("testdb")
+            .withUsername("testuser")
+            .withPassword("testpassword");
     @Autowired
     private TestRestTemplate restTemplate;
 

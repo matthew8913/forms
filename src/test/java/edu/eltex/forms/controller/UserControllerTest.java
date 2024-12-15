@@ -4,16 +4,20 @@ import edu.eltex.forms.dto.AuthRequestDto;
 import edu.eltex.forms.dto.AuthResponseDto;
 import edu.eltex.forms.dto.UserRequestDto;
 import edu.eltex.forms.dto.UserResponseDto;
+import edu.eltex.forms.entities.User;
 import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -27,12 +31,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest {
 
     @Container
-    public static GenericContainer<?> h2Container = new GenericContainer<>("buildo/h2database")
-            .withExposedPorts(9092);
-
+    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.3")
+            .withDatabaseName("testdb")
+            .withUsername("testuser")
+            .withPassword("testpassword");
     @Autowired
     private TestRestTemplate restTemplate;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
@@ -51,20 +57,12 @@ class UserControllerTest {
     }
 
     private Integer registerUser(String username, String password, UserRole role) {
-        UserRequestDto registrationRequest = UserRequestDto.builder()
+        User user = User.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .role(role)
                 .build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserRequestDto> request = new HttpEntity<>(registrationRequest, headers);
-
-        ResponseEntity<Void> response = restTemplate.postForEntity("/api/v1/auth/register", request, Void.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        return userRepository.findByUsername(username).get().getId();
+        return userRepository.save(user).getId();
     }
 
     private AuthResponseDto loginUser(String username, String password) {
@@ -72,11 +70,9 @@ class UserControllerTest {
                 .username(username)
                 .password(password)
                 .build();
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<AuthRequestDto> request = new HttpEntity<>(authRequest, headers);
-
         ResponseEntity<AuthResponseDto> response = restTemplate.postForEntity("/api/v1/auth/login", request, AuthResponseDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
