@@ -21,6 +21,11 @@ public class RefreshTokenService {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Создает токен обновления
+     * @param username имя пользователя
+     * @return новый токен
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public String createRefreshToken(String username) {
         String refreshToken = UUID.randomUUID().toString();
@@ -34,6 +39,11 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
+    /**
+     * Обновляет токен доступа
+     * @param refreshToken токен обновления
+     * @return {@link RefreshTokenResponseDto} ответ
+     */
     public RefreshTokenResponseDto refreshAccessToken(String refreshToken) {
         User user =
                 userRepository
@@ -48,6 +58,10 @@ public class RefreshTokenService {
         }
     }
 
+    /**
+     * Удаляет токен обновления у пользователя
+     * @param username имя пользователя
+     */
     public void deleteRefreshToken(String username) {
         User user =
                 userRepository

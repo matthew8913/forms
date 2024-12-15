@@ -9,6 +9,7 @@
         <div class="d-flex justify-content-center">
             <button @click="submitForm" class="btn btn-success">Завершить опрос</button>
         </div>
+        <br>
     </div>
 </template>
 

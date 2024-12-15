@@ -132,6 +132,7 @@
         <div class="d-flex justify-content-center mt-4">
             <button @click="goBack" class="btn btn-secondary">Назад</button>
         </div>
+        <br>
     </div>
 </template>
 

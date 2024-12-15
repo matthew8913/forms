@@ -2,6 +2,7 @@ package edu.eltex.forms.controller;
 
 import edu.eltex.forms.dto.statistic.StatisticDTO;
 import edu.eltex.forms.service.StatisticService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -23,12 +24,14 @@ public class StatisticController {
 
     private final StatisticService statisticService;
 
+    @Operation(summary = "Find number of completions for specific form ID")
     @GetMapping("/{formId}")
     public ResponseEntity<StatisticDTO> getNumberOfCompletions(@PathVariable Integer formId) {
         StatisticDTO completions = statisticService.getFormStatistic(formId);
         return ResponseEntity.ok(completions);
     }
 
+    @Operation(summary = "Download statistics as Excel file")
     @GetMapping("/download/{formId}")
     public ResponseEntity<ByteArrayResource> downloadExcelStatistic(@PathVariable Integer formId) throws IOException {
         byte[] excelData = statisticService.generateExcelStatistic(formId);

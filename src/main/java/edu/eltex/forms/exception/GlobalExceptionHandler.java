@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Глобальный обработчик исключений.
+ * Исключения выходящие за рамки контроллеров обрабатываются им.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

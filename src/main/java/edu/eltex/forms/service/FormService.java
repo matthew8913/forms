@@ -29,6 +29,11 @@ public class FormService {
     private final FormRepository formRepository;
     private final FormMapper formMapper;
 
+    /**
+     * Создает новую форму по запросу
+     * @param formRequestDTO запрос
+     * @return {@link FormResponseDTO} ответ
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public FormResponseDTO createForm(FormRequestDTO formRequestDTO) {
         if (formRepository.findByTitle(formRequestDTO.getTitle()).isPresent()) {
@@ -48,6 +53,10 @@ public class FormService {
         return formMapper.toDto(createdFormEntity);
     }
 
+    /**
+     * Запрашивает из базы полный список форм для опроса
+     * @return список {@link FormResponseDTO}
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<FormResponseDTO> getAllForms() {
         return StreamSupport.stream(formRepository.findAll().spliterator(), false)
@@ -55,6 +64,11 @@ public class FormService {
                 .toList();
     }
 
+    /**
+     * Запрашивает из базы все формы созданные определенным пользователем
+     * @param creatorName имя пользователя-создателя
+     * @return список {@link FormResponseDTO}
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<FormResponseDTO> getAllFormsByCreatorName(String creatorName) {
         return formRepository.findAllByCreator_Username(creatorName).stream()
@@ -62,6 +76,11 @@ public class FormService {
                 .toList();
     }
 
+    /**
+     * Запрашивает из базы форму с определенным названием
+     * @param title название формы
+     * @return {@link FormResponseDTO} ответ
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public FormResponseDTO getFormByTitle(String title) {
         Form formEntity = formRepository.findByTitle(title)
@@ -69,6 +88,11 @@ public class FormService {
         return formMapper.toDto(formEntity);
     }
 
+    /**
+     * Запрашивает из базы форму с определенным ID
+     * @param id ID формы
+     * @return {@link FormResponseDTO}
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public FormResponseDTO getFormById(Integer id) {
         Form formEntity = formRepository.findById(id)
@@ -76,6 +100,11 @@ public class FormService {
         return formMapper.toDto(formEntity);
     }
 
+    /**
+     * Удаляет из базы форму по ее ID
+     * @param id ID формы
+     * @return true - удалено, false - не найдено/не удалено
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public boolean deleteForm(Integer id) {
         Optional<Form> formEntity = formRepository.findById(id);
@@ -87,6 +116,11 @@ public class FormService {
         return false;
     }
 
+
+    /**
+     * Удаляет связанные с формой изображения из соответствующей серверной папки
+     * @param formEntity форма опроса
+     */
     private void deleteImages(Form formEntity) {
         if (formEntity.getQuestions() == null) {
             return;
