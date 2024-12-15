@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class QuestionRequestDTO {
     @NotNull(message = "Type is mandatory. Types: NUMERIC, SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT")
     private QuestionType type;
 
-    private String imageUrl;
+    private MultipartFile image;
 
     @Valid
     private List<OptionRequestDTO> options;

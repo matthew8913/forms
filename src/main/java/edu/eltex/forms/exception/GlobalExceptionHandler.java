@@ -56,4 +56,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleFormAlreadyCompletedException(FormAlreadyCompletedException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(InvalidFileTypeException.class)
+    public ResponseEntity<String> handleInvalidFileTypeException(InvalidFileTypeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

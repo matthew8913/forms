@@ -84,6 +84,7 @@ nb-configuration.xml
 ## Other
 ##############################
 *.txt
+uploads/
 .env
 # Logs
 logs

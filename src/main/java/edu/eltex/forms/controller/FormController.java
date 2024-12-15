@@ -6,8 +6,10 @@ import edu.eltex.forms.service.FormService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,8 +20,17 @@ public class FormController {
 
     private final FormService formService;
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<FormResponseDTO> createForm(@Valid @RequestBody FormRequestDTO formRequestDTO) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FormResponseDTO> createForm(@RequestPart(name = "formRequestDTO") @Valid FormRequestDTO formRequestDTO,
+                                                      @RequestPart(name = "images", required = false) List<MultipartFile> images) {
+        if (formRequestDTO.getQuestions() != null && !formRequestDTO.getQuestions().isEmpty()) {
+            for (int i = 0; i < formRequestDTO.getQuestions().size(); i++) {
+                if (i < images.size()) {
+                    formRequestDTO.getQuestions().get(i).setImage(images.get(i));
+                }
+            }
+        }
+
         FormResponseDTO formResponseDTO = formService.createForm(formRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(formResponseDTO);
     }
