@@ -8,7 +8,17 @@ import java.util.Optional;
 
 public interface FormRepository extends CrudRepository<Form, Integer> {
 
+    /**
+     * Найти опрос по названию
+     * @param title название опроса
+     * @return форма опроса
+     */
     Optional<Form> findByTitle(String title);
 
+    /**
+     * Найти опрос по создателю
+     * @param username имя пользователя-создателя
+     * @return форма опроса
+     */
     List<Form> findAllByCreator_Username(String username);
 }

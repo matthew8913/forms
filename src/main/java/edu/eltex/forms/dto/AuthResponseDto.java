@@ -1,6 +1,5 @@
 package edu.eltex.forms.dto;
 
-import edu.eltex.forms.entities.User;
 import edu.eltex.forms.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;

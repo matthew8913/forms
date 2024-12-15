@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +23,13 @@ public class StatisticService {
 
     private final StatisticRepository statisticRepository;
 
+    /**
+     * Генерирует байтовое представление Excel файла по статистике формы
+     *
+     * @param formId ID формы опроса
+     * @return байтовое представление данных Excel файла
+     * @throws IOException если не удалось создать {@link Workbook}
+     */
     public byte[] generateExcelStatistic(int formId) throws IOException {
         StatisticDTO statisticDTO = getFormStatistic(formId);
 
@@ -77,8 +83,7 @@ public class StatisticService {
                         cell.setCellValue(textAnswers.get(i));
                         cell.setCellStyle(answerStyle);
                     }
-                } else if (statistic instanceof NumericStatisticDTO) {
-                    NumericStatisticDTO numericStatistic = (NumericStatisticDTO) statistic;
+                } else if (statistic instanceof NumericStatisticDTO numericStatistic) {
 
                     Row statsHeaderRow = sheet.createRow(rowNumber++);
                     statsHeaderRow.createCell(0).setCellValue("Min");
@@ -105,8 +110,7 @@ public class StatisticService {
                         cell.setCellValue(numericStatistic.getAnswers().get(i));
                         cell.setCellStyle(answerStyle);
                     }
-                } else if (statistic instanceof ChoicesStatisticDTO) {
-                    ChoicesStatisticDTO choicesStatistic = (ChoicesStatisticDTO) statistic;
+                } else if (statistic instanceof ChoicesStatisticDTO choicesStatistic) {
 
                     Row answersRow = sheet.createRow(rowNumber++);
                     for (int i = 0; i < choicesStatistic.getAnswers().size(); i++) {
@@ -128,8 +132,7 @@ public class StatisticService {
                         cell.setCellValue(choicesStatistic.getPercentageOfAnswered().get(i) + "%");
                         cell.setCellStyle(answerStyle);
                     }
-                } else if (statistic instanceof RatingStatisticDTO) {
-                    RatingStatisticDTO ratingStatistic = (RatingStatisticDTO) statistic;
+                } else if (statistic instanceof RatingStatisticDTO ratingStatistic) {
 
                     Row titleRow = sheet.createRow(rowNumber++);
                     Cell positionCell = titleRow.createCell(0);
@@ -172,6 +175,12 @@ public class StatisticService {
         }
     }
 
+    /**
+     * Получить статистике для определенной формы
+     *
+     * @param formId ID формы
+     * @return {@link StatisticDTO} ответ
+     */
     public StatisticDTO getFormStatistic(int formId) {
         Integer numberOfCompletions = statisticRepository.countNumberOfCompletions(formId);
 
@@ -206,6 +215,14 @@ public class StatisticService {
                 .build();
     }
 
+    /**
+     * Статистика для рейтингового вопроса
+     *
+     * @param question        вопрос
+     * @param questionAnswers ответы
+     * @param questionOptions опции
+     * @return {@link QuestionStatisticDTO}
+     */
     private QuestionStatisticDTO getRatingStatistic(Question question, List<Answer> questionAnswers, List<Option> questionOptions) {
         RatingStatisticDTO ratingStatistic = RatingStatisticDTO.getFullRatingStatistic(questionOptions, questionAnswers);
 
@@ -216,6 +233,13 @@ public class StatisticService {
                 .build();
     }
 
+    /**
+     * Статистика для текстового вопроса
+     *
+     * @param question вопрос
+     * @param answers  ответы
+     * @return {@link QuestionStatisticDTO}
+     */
     public QuestionStatisticDTO getTextQuestionStatistic(Question question, List<Answer> answers) {
         List<String> textAnswers = answers.stream()
                 .map(Answer::getAnswerText)
@@ -228,6 +252,13 @@ public class StatisticService {
                 .build();
     }
 
+    /**
+     * Статистика для численного вопроса
+     *
+     * @param question вопрос
+     * @param answers  ответы
+     * @return {@link QuestionStatisticDTO}
+     */
     public QuestionStatisticDTO getNumericQuestionStatistic(Question question, List<Answer> answers) {
         List<Integer> numericAnswers = answers.stream()
                 .map(answer -> Integer.parseInt(answer.getAnswerText()))
@@ -242,6 +273,14 @@ public class StatisticService {
                 .build();
     }
 
+    /**
+     * Статистика для вопроса с выбором
+     * @param question вопрос
+     * @param answers ответы
+     * @param options опции
+     * @param numberOfCompletions количество прохождений опроса
+     * @return {@link QuestionStatisticDTO}
+     */
     public QuestionStatisticDTO getChoicesQuestionStatistic(Question question, List<Answer> answers, List<Option> options, int numberOfCompletions) {
         List<String> answeredAnswers = answers.stream()
                 .flatMap(answer -> answer.getSelectedOptions().stream())

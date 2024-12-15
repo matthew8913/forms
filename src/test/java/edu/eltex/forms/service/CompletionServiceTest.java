@@ -1,9 +1,10 @@
 package edu.eltex.forms.service;
 
+import edu.eltex.forms.dto.CompletionRequestDTO;
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.entities.*;
-import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.enums.QuestionType;
+import edu.eltex.forms.enums.UserRole;
 import edu.eltex.forms.mapper.CompletionMapper;
 import edu.eltex.forms.repository.CompletionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -103,6 +104,7 @@ class CompletionServiceTest {
     void createCompletion() {
         final Completion data = completions.get(2);
         final CompletionResponseDTO expected = mapper.toDTO(data);
+        final CompletionRequestDTO req = new CompletionRequestDTO();
 
         when(repository.save(any(Completion.class))).thenReturn(data);
         when(mapper.toEntity(any())).thenReturn(data);
@@ -110,7 +112,7 @@ class CompletionServiceTest {
                 .thenReturn(data.getAnswers().get(1).getSelectedOptions())
                 .thenReturn(data.getAnswers().get(2).getSelectedOptions())
                 .thenReturn(data.getAnswers().get(3).getSelectedOptions());
-        final CompletionResponseDTO actual = service.createCompletion(null);
+        final CompletionResponseDTO actual = service.createCompletion(req);
 
         Assertions.assertEquals(expected, actual);
     }
