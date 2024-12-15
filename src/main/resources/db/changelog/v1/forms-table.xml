@@ -30,7 +30,7 @@
 
     <changeSet id="insert-form" author="matthew">
         <insert tableName="form">
-            <column name="creator_id" valueComputed="(SELECT id FROM users WHERE username = 'creator1')"/>
+            <column name="creator_id" valueComputed="(SELECT id FROM users WHERE username = 'creator')"/>
             <column name="title" value="Первая форма"/>
             <column name="description" value="Это наша первая форма"/>
         </insert>

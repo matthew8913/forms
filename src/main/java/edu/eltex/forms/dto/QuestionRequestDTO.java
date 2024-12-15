@@ -32,9 +32,9 @@ public class QuestionRequestDTO {
 
     @AssertTrue(message = "Must have no options for non-optional types. Must have at least 1 option for optional types.")
     private boolean isValid() {
-        if ((type.equals(QuestionType.SINGLE_CHOICE) || type.equals(QuestionType.MULTIPLE_CHOICE)) && options != null && !options.isEmpty()) {
+        if ((type.equals(QuestionType.SINGLE_CHOICE) || type.equals(QuestionType.MULTIPLE_CHOICE)||type.equals(QuestionType.RATING)) && options != null && !options.isEmpty()) {
             return true;
         } else
-            return !type.equals(QuestionType.SINGLE_CHOICE) && !type.equals(QuestionType.MULTIPLE_CHOICE) && options == null;
+            return !type.equals(QuestionType.RATING)&&!type.equals(QuestionType.SINGLE_CHOICE) && !type.equals(QuestionType.MULTIPLE_CHOICE) && (options == null || options.isEmpty());
     }
 }

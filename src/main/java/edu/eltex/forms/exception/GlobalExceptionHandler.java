@@ -47,6 +47,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(IncompleteRatingAnswerException.class)
+    public ResponseEntity<String> handleIncompleteRatingAnswerException(TokenRefreshException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FormAlreadyCompletedException.class)
+    public ResponseEntity<String> handleFormAlreadyCompletedException(FormAlreadyCompletedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(InvalidFileTypeException.class)
     public ResponseEntity<String> handleInvalidFileTypeException(InvalidFileTypeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

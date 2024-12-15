@@ -25,8 +25,16 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="insert-users-csv" author="alex">
-        <loadData tableName="users" file="db/data/users.csv"/>
+    <changeSet id="insert-users" author="matthew">
+        <insert tableName="users">
+            <column name="username" value="creator"/>
+            <column name="password" value="$2a$10$8FDoQpFDLu6zIHYlL1J3deaMXdC73XaGXVC1ULBq9MkX2GXii8R3u"/>
+            <column name="role" value="CREATOR"/>
+        </insert>
     </changeSet>
-
+    <changeSet id="update-sequence-after-insert" author="matthew">
+        <sql>
+            SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
+        </sql>
+    </changeSet>
 </databaseChangeLog>
