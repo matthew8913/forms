@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,12 +21,13 @@ public class FormController {
 
     private final FormService formService;
 
+    @PreAuthorize("hasRole('CREATOR')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormResponseDTO> createForm(@RequestPart(name = "formRequestDTO") @Valid FormRequestDTO formRequestDTO,
                                                       @RequestPart(name = "images", required = false) List<MultipartFile> images) {
         if (formRequestDTO.getQuestions() != null && !formRequestDTO.getQuestions().isEmpty()) {
             for (int i = 0; i < formRequestDTO.getQuestions().size(); i++) {
-                if (i < images.size()) {
+                if (images!=null && i < images.size()) {
                     formRequestDTO.getQuestions().get(i).setImage(images.get(i));
                 }
             }
@@ -35,30 +37,35 @@ public class FormController {
         return ResponseEntity.status(HttpStatus.CREATED).body(formResponseDTO);
     }
 
+    @PreAuthorize("hasRole('CREATOR') or hasRole('USER')")
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<FormResponseDTO>> getAllForms() {
         List<FormResponseDTO> formResponseDTOS = formService.getAllForms();
         return ResponseEntity.ok(formResponseDTOS);
     }
 
+    @PreAuthorize("hasRole('CREATOR') or hasRole('USER')")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<FormResponseDTO> getFormById(@PathVariable Integer id) {
         FormResponseDTO form = formService.getFormById(id);
         return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @PreAuthorize("hasRole('CREATOR') or hasRole('USER')")
     @GetMapping(produces = "application/json", params = "title")
     public ResponseEntity<FormResponseDTO> getFormByTitle(@RequestParam("title") String title) {
         FormResponseDTO form = formService.getFormByTitle(title);
         return form != null ? ResponseEntity.ok(form) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @PreAuthorize("hasRole('CREATOR') or hasRole('USER')")
     @GetMapping(produces = "application/json", params = "username")
     public ResponseEntity<List<FormResponseDTO>> getAllFormsByCreatorName(@RequestParam("username") String username) {
         List<FormResponseDTO> formResponseDTOS = formService.getAllFormsByCreatorName(username);
         return ResponseEntity.ok(formResponseDTOS);
     }
 
+    @PreAuthorize("hasRole('CREATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteForm(@PathVariable Integer id) {
         boolean deleted = formService.deleteForm(id);

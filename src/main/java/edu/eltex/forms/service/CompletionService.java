@@ -89,4 +89,9 @@ public class CompletionService {
     public Integer getCompletionIdByUserAndForm(Integer formId, Integer userId) {
         return completionRepository.findCompletionIdByForm_IdAndUser_Id(formId, userId).orElse(-1);
     }
+
+    public boolean isUserOwnerOfCompletion(Integer userId, Integer completionId) {
+        Completion completion = completionRepository.findById(completionId).orElseThrow(()->new EntityNotFoundException("Completion with ID: " + completionId+" not found"));
+        return completion.getUser().getId().equals(userId);
+    }
 }
