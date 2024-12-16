@@ -30,7 +30,7 @@ public class CompletionController {
 
     @Operation(summary = "Find completions by specific ID")
     @PreAuthorize("hasRole('CREATOR') or " +
-            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
+            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),#id))")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<CompletionResponseDTO> getCompletion(@PathVariable Integer id) {
         CompletionResponseDTO completion = completionService.getCompletionById(id);
@@ -46,7 +46,7 @@ public class CompletionController {
 
     @Operation(summary = "Delete completions by specific ID")
     @PreAuthorize("hasRole('CREATOR') or " +
-            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
+            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),#id))")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteCompletion(@PathVariable Integer id) {
         boolean deleted = completionService.deleteCompletion(id);
@@ -55,7 +55,7 @@ public class CompletionController {
 
     @Operation(summary = "Identify if user passed form or no")
     @PreAuthorize("hasRole('CREATOR') or " +
-            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
+            "(hasRole('USER'))")
     @GetMapping(value = "/user-form-completion")
     public ResponseEntity<Integer> getCompletionIdByUserAndForm(
             @RequestParam Integer formId,
