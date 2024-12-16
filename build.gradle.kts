@@ -56,6 +56,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
     implementation("org.apache.poi:poi-ooxml:5.3.0")
+    implementation("org.apache.tika:tika-core:2.9.1")
 }
 
 tasks.withType<Test> {

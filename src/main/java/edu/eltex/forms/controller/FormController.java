@@ -1,5 +1,7 @@
 package edu.eltex.forms.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.eltex.forms.dto.FormRequestDTO;
 import edu.eltex.forms.dto.FormResponseDTO;
 import edu.eltex.forms.service.FormService;
@@ -13,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,12 +29,23 @@ public class FormController {
     @Operation(summary = "Create new form")
     @PreAuthorize("hasRole('CREATOR')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FormResponseDTO> createForm(@RequestPart(name = "formRequestDTO") @Valid FormRequestDTO formRequestDTO,
-                                                      @RequestPart(name = "images", required = false) List<MultipartFile> images) {
+    public ResponseEntity<FormResponseDTO> createForm(
+            @RequestPart(name = "formRequestDTO") @Valid FormRequestDTO formRequestDTO,
+            @RequestPart(name = "images", required = false) List<MultipartFile> images,
+            @RequestPart(name = "imageIndexes", required = false) String imageIndexesJson) {
+
+        List<Integer> imageIndexes = new ArrayList<>();
+        if (imageIndexesJson != null && !imageIndexesJson.isEmpty()) {
+            try {
+                imageIndexes = new ObjectMapper().readValue(imageIndexesJson, new TypeReference<>() {});
+            } catch (IOException e) {
+                return ResponseEntity.badRequest().body(null);
+            }
+        }
         if (formRequestDTO.getQuestions() != null && !formRequestDTO.getQuestions().isEmpty()) {
             for (int i = 0; i < formRequestDTO.getQuestions().size(); i++) {
-                if (images!=null && i < images.size()) {
-                    formRequestDTO.getQuestions().get(i).setImage(images.get(i));
+                if (imageIndexes.contains(i) && images != null) {
+                    formRequestDTO.getQuestions().get(i).setImage(images.get(imageIndexes.indexOf(i)));
                 }
             }
         }
