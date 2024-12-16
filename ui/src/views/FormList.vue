@@ -1,6 +1,11 @@
 <template>
     <div class="container mt-5">
       <h1 class="text-center mb-4">Список опросов</h1>
+      <div v-if="userRole === 'CREATOR'" class="text-center mb-4">
+        <router-link to="/create-form" class="btn-link">
+          <span class="btn-link-text">Создать опрос</span>
+        </router-link>
+      </div>
       <div v-if="forms.length === 0" class="text-center">
         <p>Нет доступных опросов</p>
       </div>
@@ -37,11 +42,7 @@
             </div>
           </div>
         </div>
-        <div v-if="userRole === 'CREATOR'" class="mt-4 text-center">
-          <router-link to="/create-form" class="btn btn-success">
-            Создать опрос
-          </router-link>
-        </div>
+
       </div>
     </div>
   </template>
