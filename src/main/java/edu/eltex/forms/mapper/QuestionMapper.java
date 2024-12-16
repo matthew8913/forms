@@ -19,6 +19,11 @@ import java.util.UUID;
 @Mapper(componentModel = "spring", uses = OptionMapper.class, builder = @Builder(disableBuilder = true))
 public interface QuestionMapper {
 
+    /**
+     * Преобразовывает Request в Entity
+     * @param questionRequestDTO что нужно преобразовать
+     * @return {@link edu.eltex.forms.entities.Question} результат преобразования
+     */
     @Mappings({
             @Mapping(ignore = true, target = "id"),
             @Mapping(ignore = true, target = "form"),
@@ -27,12 +32,23 @@ public interface QuestionMapper {
     })
     Question toEntity(QuestionRequestDTO questionRequestDTO);
 
+    /**
+     * Преобразовывает Entity в Response
+     * @param questionEntity что нужно преобразовать
+     * @return {@link edu.eltex.forms.dto.QuestionResponseDTO} результат преобразования
+     */
     @Mappings({
             @Mapping(source = "form.id", target = "formId"),
             @Mapping(source = "options", target = "options"),
     })
     QuestionResponseDTO toDto(Question questionEntity);
 
+
+    /**
+     * Обработка сохранения картинки при создании вопроса
+     * @param question созданный entity
+     * @param questionRequestDTO запрос
+     */
     @AfterMapping
     default void handleImage(@MappingTarget Question question, QuestionRequestDTO questionRequestDTO) {
         MultipartFile image = questionRequestDTO.getImage();

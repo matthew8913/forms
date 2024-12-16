@@ -10,6 +10,11 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring", uses = {QuestionMapper.class})
 public interface FormMapper {
 
+    /**
+     * Преобразовывает Request в Entity
+     * @param formRequestDTO что нужно преобразовать
+     * @return {@link edu.eltex.forms.entities.Form} результат преобразования
+     */
     @Mappings({
             @Mapping(ignore = true, target = "id"),
             @Mapping(source = "creatorId", target = "creator.id"),
@@ -17,6 +22,11 @@ public interface FormMapper {
     })
     Form toEntity(FormRequestDTO formRequestDTO);
 
+    /**
+     * Преобразовывает Entity в Response
+     * @param formEntity что нужно преобразовать
+     * @return {@link edu.eltex.forms.dto.FormResponseDTO} результат преобразования
+     */
     @Mappings({
             @Mapping(source = "creator.id", target = "creatorId"),
             @Mapping(source = "creator.username", target = "creatorName"),

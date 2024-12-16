@@ -12,30 +12,35 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    /**
+     * Преобразовывает Response в Entity
+     * @param userResponseDto что нужно преобразовать
+     * @return {@link edu.eltex.forms.entities.User} результат преобразования
+     */
     @Mappings({
             @Mapping(ignore = true, target = "password"),
             @Mapping(ignore = true, target = "refreshToken"),
-            @Mapping(source = "role", target = "role", qualifiedByName = "stringToRole"),
+            @Mapping(source = "role", target = "role"),
     })
-    User toEntity(UserResponseDto dto);
+    User toEntity(UserResponseDto userResponseDto);
 
+    /**
+     * Преобразовывает Request в Entity
+     * @param userRequestDto что нужно преобразовать
+     * @return {@link edu.eltex.forms.entities.User} результат преобразования
+     */
     @Mappings({
             @Mapping(ignore = true, target = "id"),
             @Mapping(ignore = true, target = "refreshToken"),
-            @Mapping(source = "role", target = "role", qualifiedByName = "stringToRole"),
+            @Mapping(source = "role", target = "role"),
     })
-    User toEntity(UserRequestDto dto);
+    User toEntity(UserRequestDto userRequestDto);
 
-    @Mapping(source = "role", target = "role", qualifiedByName = "roleToString")
+    /**
+     * Преобразовывает Entity в Response
+     * @param user что нужно преобразовать
+     * @return {@link edu.eltex.forms.dto.UserResponseDto} результат преобразования
+     */
+    @Mapping(source = "role", target = "role")
     UserResponseDto toDto(User user);
-
-    @Named("roleToString")
-    default String roleToString(UserRole role) {
-        return role != null ? role.name() : null;
-    }
-
-    @Named("stringToRole")
-    default UserRole stringToRole(String role) {
-        return role != null ? UserRole.valueOf(role) : null;
-    }
 }

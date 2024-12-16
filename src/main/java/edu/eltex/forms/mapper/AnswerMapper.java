@@ -10,6 +10,11 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring", uses = {QuestionMapper.class, OptionMapper.class})
 public interface AnswerMapper {
 
+    /**
+     * Преобразовывает Request в Entity
+     * @param answerRequestDTO что нужно преобразовать
+     * @return {@link edu.eltex.forms.entities.Answer} результат преобразования
+     */
     @Mappings({
             @Mapping(ignore = true, target = "id"),
             @Mapping(ignore = true, target = "completion"),
@@ -18,6 +23,11 @@ public interface AnswerMapper {
     })
     Answer toEntity(AnswerRequestDTO answerRequestDTO);
 
+    /**
+     * Преобразовывает Entity в Response
+     * @param answerEntity что нужно преобразовать
+     * @return {@link edu.eltex.forms.dto.AnswerResponseDTO} результат преобразования
+     */
     @Mappings({
             @Mapping(source = "completion.id", target = "completionId"),
             @Mapping(source = "question.id", target = "questionId"),
