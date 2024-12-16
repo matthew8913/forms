@@ -121,14 +121,18 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 text-center mt-4">
-                <button class="btn btn-primary" @click="downloadStatistic">Скачать статистику</button>
-            </div>
         </div>
 
         <div v-else class="text-center">
             <p>Загрузка статистики...</p>
         </div>
+        <div class="col-12 text-center mt-4">
+            <button class="btn btn-primary" @click="downloadStatistic">Скачать статистику</button>
+        </div>
+        <div class="col-12 text-center mt-4">
+            <button class="btn btn-danger ml-3" @click="deleteForm">Удалить опрос</button>
+        </div>
+       
         <div class="d-flex justify-content-center mt-4">
             <button @click="goBack" class="btn btn-secondary">Назад</button>
         </div>
@@ -167,6 +171,25 @@ export default {
                 console.error('Ошибка при загрузке статистики:', error);
             }
         },
+        async deleteForm() {
+        try {
+            const formId = this.$route.params.formId; 
+            const response = await authService.fetchWithToken(`${API_BASE_URL}/forms/${formId}`, {
+                method: 'DELETE', 
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Ошибка при удалении опроса:', errorData);
+                return;
+            }
+
+            this.$router.push('/form-list');
+        } catch (error) {
+            console.error('Ошибка при удалении опроса:', error);
+        }
+    },
+
         formattedAnswers(answers) {
             const sortedAnswers = answers.sort((a, b) => a - b);
             if (sortedAnswers.length > 5) {

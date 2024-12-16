@@ -61,7 +61,7 @@ export default {
           throw new Error(errorData);
         }
         const data = await response.json();
-        if (authService.getUserRole === 'USER') {
+        if (authService.getUserRole() === 'USER') {
           for (const form of data) {
             await this.checkFormCompletion(form);
           }
