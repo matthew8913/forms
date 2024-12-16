@@ -24,30 +24,38 @@ repositories {
 }
 
 dependencies {
+
+    // Starters
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.4.0")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.4.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.4.0")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.4.0")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.4.0")
+
+    // Test
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.3")
+    testImplementation("org.springframework.security:spring-security-test:6.4.1")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers:3.4.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.20.4")
+    testImplementation("org.testcontainers:postgresql:1.20.4")
+
+    // Database
+    implementation("org.liquibase:liquibase-core:4.30.0")
+    runtimeOnly("com.h2database:h2:2.3.232")
+    runtimeOnly("org.postgresql:postgresql:42.7.4")
+
+    //Security
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    testImplementation("org.springframework.security:spring-security-test")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
-
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-
-    implementation("org.liquibase:liquibase-core")
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Libs
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+    implementation("org.apache.poi:poi-ooxml:5.3.0")
 }
 
 tasks.withType<Test> {
@@ -74,17 +82,17 @@ tasks.register("buildUI") {
             delete(distFolder)
         }
 
-        project.exec() {
+        exec {
             workingDir = uiFolder
             commandLine("npm", "install")
         }
 
-        project.exec() {
+        exec {
             workingDir = uiFolder
             commandLine("npm", "fund")
         }
 
-        project.exec() {
+        exec {
             workingDir = uiFolder
             commandLine("npm", "run", "build")
         }
@@ -99,6 +107,7 @@ tasks.register("buildUI") {
 
     finalizedBy("copyToResources")
 }
+
 
 tasks.register("copyToResources") {
     group = "custom"
@@ -129,42 +138,3 @@ tasks.register("copyToResources") {
 }
 
 tasks.findByName("bootRun")?.dependsOn("buildUI")
-
-tasks.register("depsize") {
-    description = "Prints dependencies for \"default\" configuration"
-    doLast {
-        configurations["default"].isCanBeResolved = true
-        listConfigurationDependencies(configurations["default"])
-    }
-}
-
-tasks.register("depsize-all-configurations") {
-    description = "Prints dependencies for all available configurations"
-    doLast {
-        configurations
-                .filter { it.isCanBeResolved }
-                .forEach { listConfigurationDependencies(it) }
-    }
-}
-
-fun listConfigurationDependencies(configuration: Configuration ) {
-    val formatStr = "%,10.2f"
-
-    val size = configuration.map { it.length() / (1024.0 * 1024.0) }.sum()
-
-    val out = StringBuffer()
-    out.append("\nConfiguration name: \"${configuration.name}\"\n")
-    if (size > 0) {
-        out.append("Total dependencies size:".padEnd(65))
-        out.append("${String.format(formatStr, size)} Mb\n\n")
-
-        configuration.sortedBy { -it.length() }
-                .forEach {
-                    out.append(it.name.padEnd(65))
-                    out.append("${String.format(formatStr, (it.length() / 1024.0))} kb\n")
-                }
-    } else {
-        out.append("No dependencies found")
-    }
-    println(out)
-}

@@ -4,7 +4,6 @@ import edu.eltex.forms.dto.AuthRequestDto;
 import edu.eltex.forms.dto.AuthResponseDto;
 import edu.eltex.forms.dto.UserRequestDto;
 import edu.eltex.forms.dto.UserResponseDto;
-import edu.eltex.forms.entities.User;
 import edu.eltex.forms.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,10 +22,13 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * Аутентифицирует пользователя и возвращает его токен доступа и обновления
+     * @param authRequest запрос на логин
+     * @return {@link edu.eltex.forms.dto.AuthResponseDto} ответ с токенами
+     */
     public AuthResponseDto getTokens(AuthRequestDto authRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authRequest.getUsername(), authRequest.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
         final String jwt = jwtService.generateToken(userDetails);
         final String refreshToken = refreshTokenService.createRefreshToken(authRequest.getUsername());
@@ -35,9 +37,14 @@ public class AuthService {
         UserRole role = user.getRole();
         String username = user.getUsername();
         Long id = Long.valueOf(user.getId());
-        return new AuthResponseDto(jwt, refreshToken, role, id,username);
+        return new AuthResponseDto(jwt, refreshToken, role, id, username);
     }
 
+    /**
+     * Определяет, вошел ли сейчас пользователя
+     * @param userId ID пользователя
+     * @return true - вошел, false - не вошел
+     */
     public boolean isAuthenticatedUserWithId(Integer userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
@@ -48,6 +55,10 @@ public class AuthService {
         return false;
     }
 
+    /**
+     * Создает нового пользователя в базе
+     * @param registrationRequest запрос создания
+     */
     public void registerUser(UserRequestDto registrationRequest) {
         userService.createUser(registrationRequest);
     }

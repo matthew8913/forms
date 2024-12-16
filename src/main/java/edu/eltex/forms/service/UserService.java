@@ -28,6 +28,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    /**
+     * Запрос всех существующих пользователей
+     * @return список {@link UserResponseDto}
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<UserResponseDto> findAllUsers() {
         return userRepository.findAll().stream()
@@ -35,6 +39,11 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Поиск пользователя по ID
+     * @param id ID пользователя
+     * @return {@link UserResponseDto} ответ
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserResponseDto findUserById(Integer id) {
         User user = userRepository.findById(id)
@@ -42,6 +51,11 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    /**
+     * Поиск пользователя по имени
+     * @param username имя пользователя
+     * @return {@link UserResponseDto} ответ
+     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserResponseDto findUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
@@ -49,6 +63,10 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    /** Создание нового пользователя
+     * @param userRequestDto запрос
+     * @return {@link UserResponseDto} ответ
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         userRequestDto.setRole(USER);
@@ -61,6 +79,12 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    /**
+     * Обновление данных о пользователе
+     * @param id ID пользователя
+     * @param userRequestDto запрос с новыми данными
+     * @return {@link UserResponseDto} ответ
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public UserResponseDto updateUser(Integer id, UserRequestDto userRequestDto) {
         if (!userRepository.existsById(id)) {
@@ -72,6 +96,10 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    /**
+     * Удаления пользователя по ID
+     * @param id ID пользователя
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
@@ -80,6 +108,11 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    /**
+     * Сохранение токена обновления для пользователя
+     * @param username имя пользователя
+     * @param refreshToken токен обновления
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void saveRefreshToken(String username, String refreshToken) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));

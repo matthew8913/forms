@@ -1,6 +1,11 @@
 package edu.eltex.forms.security;
 
 import edu.eltex.forms.service.JwtService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +25,15 @@ import java.io.IOException;
  * аутентификацию в контекст безопасности.
  */
 @Component
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.HEADER,
+        description = "Bearer JWT Auth"
+)
+@OpenAPIDefinition(security = @SecurityRequirement(name = "bearerAuth"))
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 

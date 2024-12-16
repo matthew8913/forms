@@ -3,6 +3,7 @@ package edu.eltex.forms.controller;
 import edu.eltex.forms.dto.CompletionRequestDTO;
 import edu.eltex.forms.dto.CompletionResponseDTO;
 import edu.eltex.forms.service.CompletionService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ public class CompletionController {
 
     private final CompletionService completionService;
 
+    @Operation(summary = "Find all completions")
     @PreAuthorize("hasRole('CREATOR')")
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<CompletionResponseDTO>> getAllCompletions() {
@@ -26,6 +28,7 @@ public class CompletionController {
         return ResponseEntity.ok(completions);
     }
 
+    @Operation(summary = "Find completions by specific ID")
     @PreAuthorize("hasRole('CREATOR') or " +
             "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -34,12 +37,14 @@ public class CompletionController {
         return completion != null ? ResponseEntity.ok(completion) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @Operation(summary = "Create new completion")
     @PreAuthorize("hasRole('USER')")
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<CompletionResponseDTO> createCompletion(@Valid @RequestBody CompletionRequestDTO completionRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(completionService.createCompletion(completionRequestDTO));
     }
 
+    @Operation(summary = "Delete completions by specific ID")
     @PreAuthorize("hasRole('CREATOR') or " +
             "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
     @DeleteMapping(value = "/{id}")
@@ -48,6 +53,7 @@ public class CompletionController {
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Completion with given ID not found");
     }
 
+    @Operation(summary = "Identify if user passed form or no")
     @PreAuthorize("hasRole('CREATOR') or " +
             "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
     @GetMapping(value = "/user-form-completion")

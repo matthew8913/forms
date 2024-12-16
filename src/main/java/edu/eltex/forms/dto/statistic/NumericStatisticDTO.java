@@ -1,6 +1,5 @@
 package edu.eltex.forms.dto.statistic;
 
-import edu.eltex.forms.enums.QuestionType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,11 +16,11 @@ public class NumericStatisticDTO {
     public static NumericStatisticDTO getFullNumericStatistic(List<Integer> answers) {
         Integer minAnswer = answers.stream()
                 .min(Integer::compare)
-                .orElse(null);
+                .orElse(0);
 
         Integer maxAnswer = answers.stream()
                 .max(Integer::compare)
-                .orElse(null);
+                .orElse(0);
 
         Integer avgAnswer = (int) answers.stream()
                 .mapToInt(Integer::intValue)
