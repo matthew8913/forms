@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CompletionController {
     private final CompletionService completionService;
 
     @Operation(summary = "Find all completions")
+    @PreAuthorize("hasRole('CREATOR')")
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<CompletionResponseDTO>> getAllCompletions() {
         List<CompletionResponseDTO> completions = completionService.getAllCompletions();
@@ -27,6 +29,8 @@ public class CompletionController {
     }
 
     @Operation(summary = "Find completions by specific ID")
+    @PreAuthorize("hasRole('CREATOR') or " +
+            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<CompletionResponseDTO> getCompletion(@PathVariable Integer id) {
         CompletionResponseDTO completion = completionService.getCompletionById(id);
@@ -34,12 +38,15 @@ public class CompletionController {
     }
 
     @Operation(summary = "Create new completion")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<CompletionResponseDTO> createCompletion(@Valid @RequestBody CompletionRequestDTO completionRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(completionService.createCompletion(completionRequestDTO));
     }
 
     @Operation(summary = "Delete completions by specific ID")
+    @PreAuthorize("hasRole('CREATOR') or " +
+            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteCompletion(@PathVariable Integer id) {
         boolean deleted = completionService.deleteCompletion(id);
@@ -47,6 +54,8 @@ public class CompletionController {
     }
 
     @Operation(summary = "Identify if user passed form or no")
+    @PreAuthorize("hasRole('CREATOR') or " +
+            "(hasRole('USER') and @completionService.isUserOwnerOfCompletion(@authService.getAuthenticatedUserId(),id))")
     @GetMapping(value = "/user-form-completion")
     public ResponseEntity<Integer> getCompletionIdByUserAndForm(
             @RequestParam Integer formId,
@@ -56,6 +65,4 @@ public class CompletionController {
                 ? ResponseEntity.ok(completionId)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
-
 }

@@ -63,5 +63,9 @@ public class AuthService {
         userService.createUser(registrationRequest);
     }
 
+    public Integer  getAuthenticatedUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userService.findUserByUsername(authentication.getName()).getId();
+    }
 
 }

@@ -15,8 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
@@ -62,6 +65,7 @@ class FormControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getAllForms() throws Exception {
         when(formService.getAllForms()).thenReturn(mockForms);
 
@@ -77,6 +81,7 @@ class FormControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getFormById() throws Exception {
         int id = 1;
 
@@ -94,6 +99,7 @@ class FormControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getFormByTitle() throws Exception {
         String title = "Test title 1";
 
@@ -112,6 +118,7 @@ class FormControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getFormsByCreatorName() throws Exception {
         String creatorName = "user1";
 
@@ -130,6 +137,7 @@ class FormControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"CREATOR"})
     void createForm() throws Exception {
         User u = new User(1, "user1", "pass1", UserRole.CREATOR, "rt");
         FormRequestDTO fReq = FormRequestDTO.builder()
@@ -147,16 +155,23 @@ class FormControllerTest {
                 .build();
 
         when(formService.createForm(fReq)).thenReturn(fRes);
-
-        String requestStr = objectMapper.writeValueAsString(fReq);
-        String responseStr = objectMapper.writeValueAsString(fRes);
-
-        mvc.perform(post("/api/v1/forms").contentType(MediaType.APPLICATION_JSON).content(requestStr))
+        MockMultipartFile formRequestDTOFile = new MockMultipartFile(
+                "formRequestDTO",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsString(fReq).getBytes()
+        );
+        System.err.println(objectMapper.writeValueAsString(fRes));
+        mvc.perform(MockMvcRequestBuilders.multipart("/api/v1/forms")
+                        .file(formRequestDTOFile)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().json(responseStr));
+                .andDo(result -> System.err.println("Actual JSON: " + result.getResponse().getContentAsString()))
+                .andExpect(content().json(objectMapper.writeValueAsString(fRes)));
     }
 
     @Test
+    @WithMockUser(roles = "CREATOR")
     void deleteForm() throws Exception {
         int id = 1;
 
