@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   postgres:
     container_name: postgres
@@ -13,6 +14,8 @@ services:
       TZ: ${POSTGRES_TZ}
 
   spring-app:
+    container_name: forms-app
+    image: forms:0.1
     build:
       context: .
       dockerfile: Dockerfile

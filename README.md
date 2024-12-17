@@ -66,26 +66,34 @@
 - Java 21 или выше
 - Grade 8 и выше
 #### Или
-- Docker 4 и выше
+- Docker Engine 24 и выше
 
 ## Сборка проекта
 
 ```bash
-# Clone
+# 0. Clone
 git clone <this repository>
 cd 2024-6-eltex-forms
 git checkout master
 
-# Run locally
-gradle bootRun
+# 1. Set Up .env
+cp .env.example .env
 
-# Run in Docker
+# 2.1 Run locally 
+gradle clean bootRun
+
+# 2.2. Run fully in Docker 
 docker compose up -d
+
+# 2.3. Build locally & Run in Docker
+gradle clean bootBuildImage
+docker compose up -d --no-build
 ```
 
-По умолчанию приложение работает на **localhost:8080**<br>
-Для входа извне необходимо открыть порт **8080**<br>
-Адресом для доступа будет внешний адрес машины запуска<br>
+По умолчанию приложение работает на **localhost:8080**.<br>
+Для входа извне необходимо открыть порт **8080**.<br>
+Адресом для доступа будет внешний адрес машины запуска.<br>
+Настройки портов можно изменять в файле **.env**<br>
 
 ## Используемые зависимости
 
