@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     java
     id("org.springframework.boot") version "3.4.0"
@@ -42,7 +44,6 @@ dependencies {
 
     // Database
     implementation("org.liquibase:liquibase-core:4.30.0")
-    runtimeOnly("com.h2database:h2:2.3.232")
     runtimeOnly("org.postgresql:postgresql:42.7.4")
 
     //Security
@@ -139,3 +140,4 @@ tasks.register("copyToResources") {
 }
 
 tasks.findByName("bootRun")?.dependsOn("buildUI")
+tasks.findByName("bootBuildImage")?.dependsOn("buildUI")
